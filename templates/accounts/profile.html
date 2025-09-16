@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="p-6 md:ml-64 transition-all">
+  <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-lg mx-auto">
+    
+    <!-- Title -->
+    <h2 class="text-3xl font-extrabold text-indigo-600 mb-6 text-center">👤 Profil</h2>
+
+    <!-- User Info -->
+    <div class="space-y-4 text-gray-700 text-sm sm:text-base">
+      <p>
+        <span class="font-semibold text-gray-900">Foydalanuvchi nomi:</span> 
+        {{ user.username }}
+      </p>
+      <p>
+        <span class="font-semibold text-gray-900">Email:</span> 
+        {{ user.email }}
+      </p>
+      <p>
+        <span class="font-semibold text-gray-900">Ism:</span> 
+        {{ user.first_name }}
+      </p>
+      <p>
+        <span class="font-semibold text-gray-900">Familiya:</span> 
+        {{ user.last_name }}
+      </p>
+    </div>
+
+    <!-- Buttons -->
+    <div class="mt-8 flex flex-col sm:flex-row gap-3">
+      <a href="{% url 'accounts:profile_edit' %}" 
+         class="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+        ✏️ Tahrirlash
+      </a>
+
+      <form action="{% url 'accounts:logout' %}" method="post" class="flex-1">
+        {% csrf_token %}
+        <button type="submit" 
+                class="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+          🚪 Chiqish
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

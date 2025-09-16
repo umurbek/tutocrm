@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">Bildirishnomalar</h1>
+
+{% if notifications %}
+  <ul class="divide-y">
+    {% for n in notifications %}
+      <li class="py-3 flex items-center justify-between {% if not n.is_read %}bg-blue-50{% endif %}">
+        <div>
+          <p class="font-semibold">{{ n.title }}</p>
+          <p class="text-sm text-gray-600">{{ n.message }}</p>
+          <p class="text-xs text-gray-400">{{ n.created_at|date:"d.m.Y H:i" }}</p>
+        </div>
+        <div>
+          {% if not n.is_read %}
+            <!-- O‘qilmagan → ichiga olib kiradi -->
+            <a href="{% url 'notification_read' n.id %}" 
+               class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+               Ichiga kirish
+            </a>
+          {% else %}
+            <!-- O‘qilgan -->
+            <span class="px-3 py-1 bg-gray-300 rounded text-sm">O‘qilgan</span>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="text-gray-500">Bildirishnomalar yo‘q.</p>
+{% endif %}
+{% endblock %}

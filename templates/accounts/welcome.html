@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Xush kelibsiz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <style>
+    body {
+      overflow: hidden; /* fon animatsiya bilan to‘la chiqadi */
+    }
+  </style>
+</head>
+<body class="relative flex items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+
+  <!-- Animated background shapes -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div class="absolute -top-10 -left-10 w-40 h-40 bg-pink-400 opacity-30 rounded-full animate-ping"></div>
+    <div class="absolute top-20 right-10 w-32 h-32 bg-yellow-400 opacity-20 rounded-full animate-bounce"></div>
+    <div class="absolute bottom-10 left-1/3 w-28 h-28 bg-indigo-300 opacity-20 rounded-full animate-spin-slow"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="relative text-center text-white p-6">
+    <!-- Logo / Title -->
+    <h1 class="text-4xl sm:text-5xl font-extrabold mb-6 animate__animated animate__fadeInDown">
+      🎉 Xush kelibsiz, <span class="text-yellow-300">{{ user.first_name|default:user.username }}</span>!
+    </h1>
+
+    <!-- Sub text -->
+    <p class="text-base sm:text-lg mb-8 animate__animated animate__fadeIn animate__delay-1s">
+      Siz TutorCRM tizimiga muvaffaqiyatli kirdingiz 🚀
+    </p>
+
+    <!-- Confetti effect -->
+    <div id="confetti" class="absolute inset-0 pointer-events-none"></div>
+
+    <!-- Button -->
+    <a href="{% url 'dashboard' %}" 
+       class="px-6 py-3 bg-yellow-400 text-indigo-900 font-bold rounded-xl shadow-lg hover:bg-yellow-300 
+              animate__animated animate__zoomIn animate__delay-2s inline-block">
+      Dashboardga o‘tish →
+    </a>
+  </div>
+
+  <!-- Confetti JS -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    // Confetti boshlanishda
+    setTimeout(() => {
+      confetti({
+        particleCount: 200,
+        spread: 120,
+        origin: { y: 0.6 }
+      });
+    }, 500);
+
+    // Har 2.5 sekundda konfetti
+    setInterval(() => {
+      confetti({
+        particleCount: 120,
+        spread: 100,
+        origin: { y: 0.6 }
+      });
+    }, 2500);
+
+    // Custom spin animatsiya (Tailwind defaultda yo‘q)
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'spin-slow': 'spin 10s linear infinite',
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">📋 Vazifalar ro‘yxati</h1>
+
+<div class="bg-white shadow rounded-lg">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sarlavha</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Muddat</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Holati</th>
+        <th class="px-6 py-3"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      {% for task in tasks %}
+        <tr>
+          <td class="px-6 py-4">
+            <a href="{% url 'tasks:task_detail' task.id %}" class="text-blue-600 hover:underline">
+              {{ task.title }}
+            </a>
+          </td>
+          <td class="px-6 py-4">{{ task.due_date|date:"d.m.Y" }}</td>
+          <td class="px-6 py-4">
+            {% if task.status == "pending" %}
+              <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full">
+                ⏳ Bajarilmagan
+              </span>
+            {% else %}
+              <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                ✅ Bajarilgan
+              </span>
+            {% endif %}
+          </td>
+          <td class="px-6 py-4 text-right">
+            <a href="{% url 'tasks:task_update' task.id %}" class="text-indigo-600 hover:text-indigo-900 mr-3">✏️</a>
+            <a href="{% url 'tasks:task_delete' task.id %}" class="text-red-600 hover:text-red-900">🗑️</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" class="px-6 py-4 text-center text-gray-500">Hech qanday vazifa yo‘q.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="mt-4">
+  <a href="{% url 'tasks:task_create' %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg">➕ Yangi vazifa</a>
+</div>
+{% endblock %}

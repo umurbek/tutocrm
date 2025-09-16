@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Kirish - TutorCRM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4">
+
+  <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md transform transition hover:scale-[1.01]">
+    
+    <!-- Logo -->
+    <h2 class="text-3xl font-extrabold mb-6 text-center text-indigo-600">TutorCRM</h2>
+    <p class="text-center text-gray-500 mb-6">Xush kelibsiz 👋<br>Tizimga kirish uchun variantni tanlang</p>
+
+    <!-- Email orqali kirish -->
+    <form method="post" action="{% url 'email_login' %}" class="space-y-4">
+      {% csrf_token %}
+      {% if error %}
+        <p class="text-red-500 text-sm text-center">{{ error }}</p>
+      {% endif %}
+
+      <!-- Email input -->
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Email</label>
+        <input type="email" name="email" required
+               class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition text-sm sm:text-base">
+      </div>
+      <!-- Submit button -->
+      <button type="submit"
+              class="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 active:scale-95 transition">
+        📩 Kod yuborish
+      </button>
+    </form>
+
+    <!-- Or separator -->
+    <div class="flex items-center my-6">
+      <hr class="flex-grow border-gray-300">
+      <span class="mx-3 text-gray-500 text-sm">yoki</span>
+      <hr class="flex-grow border-gray-300">
+    </div>
+
+    <!-- Google orqali kirish -->
+    <a href="{% provider_login_url 'google' %}"
+       class="flex items-center justify-center gap-3 border py-2 px-4 rounded-lg hover:bg-gray-50 transition font-medium text-sm sm:text-base">
+      <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="w-5 h-5">
+      Google orqali kirish
+    </a>
+
+    <!-- Registratsiya link -->
+    <p class="mt-6 text-center text-sm text-gray-600">
+      Akkountingiz yo‘qmi?
+      <a href="{% url 'signup' %}" class="text-indigo-600 hover:underline font-medium">Ro‘yxatdan o‘tish</a>
+    </p>
+  </div>
+
+</body>
+</html>

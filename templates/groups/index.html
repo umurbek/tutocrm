@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Guruhlar</h1>
+
+<div class="bg-white p-6 rounded shadow">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-lg font-semibold">Guruhlar ({{ groups.count }})</h2>
+    <a href="{% url 'group_create' %}" class="bg-green-500 text-white px-4 py-2 rounded">+ Yangi guruh</a>
+  </div>
+
+  <table class="w-full border text-sm">
+    <thead>
+      <tr class="bg-gray-100 text-left">
+        <th class="p-2">#</th>
+        <th class="p-2">Guruh</th>
+        <th class="p-2">O‘quvchilar soni</th>
+        <th class="p-2">Guruh o‘qituvchisi</th>
+        <th class="p-2">Harakatlar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for group in groups %}
+      <tr class="border-t">
+        <td class="p-2">{{ forloop.counter|stringformat:"02d" }}</td>
+        <td class="p-2">{{ group.name }}</td>
+        <td class="p-2">{{ group.student_count }}</td>
+        <td class="p-2">{{ group.teacher }}</td>
+        <td class="p-2">
+          <a href="{% url 'group_edit' group.id %}" class="text-blue-500">✏️</a>
+          <a href="{% url 'group_delete' group.id %}" class="text-red-500 ml-2">🗑️</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center py-4 text-gray-500">Hali guruhlar mavjud emas</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="p-6 ml-64">
+  <div class="bg-white shadow rounded-lg p-6">
+    <h1 class="text-2xl font-bold mb-6">📋 Davomat</h1>
+
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="bg-gray-200 text-left">
+          <th class="p-3">O‘quvchi</th>
+          <th class="p-3">Sana</th>
+          <th class="p-3">Holat</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in attendance %}
+        <tr class="border-b">
+          <td class="p-3">{{ record.student.first_name }} {{ record.student.last_name }}</td>
+          <td class="p-3">{{ record.date }}</td>
+          <td class="p-3">{% if record.is_present %}✅ Bor{% else %}❌ Yo‘q{% endif %}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" class="p-3 text-center text-gray-500">Hali davomat kiritilmagan</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

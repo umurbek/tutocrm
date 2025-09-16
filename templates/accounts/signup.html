@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Ro‘yxatdan o‘tish</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-r from-indigo-100 to-purple-100">
+  <div class="bg-white shadow-xl rounded-2xl p-8 w-96">
+    
+    <!-- Logo -->
+    <h2 class="text-3xl font-extrabold mb-6 text-center text-indigo-600">TutorCRM</h2>
+
+    <!-- Form -->
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      {% for field in form %}
+        <div>
+          <label class="block mb-1 text-sm font-medium text-gray-700">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ field.errors }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <button type="submit"
+              class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2.5 rounded-lg font-medium shadow hover:from-indigo-700 hover:to-purple-700 transition">
+        ✨ Ro‘yxatdan o‘tish
+      </button>
+    </form>
+
+    <!-- Separator -->
+    <div class="flex items-center my-6">
+      <hr class="flex-grow border-gray-300">
+      <span class="mx-2 text-gray-400 text-sm">yoki</span>
+      <hr class="flex-grow border-gray-300">
+    </div>
+
+    <!-- Google login -->
+    <div>
+      <a href="{% provider_login_url 'google' %}" 
+         class="flex items-center justify-center gap-2 border py-2 px-4 rounded-lg hover:bg-gray-50 transition">
+        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="w-5 h-5">
+        Google orqali kirish
+      </a>
+    </div>
+
+    <!-- Login link -->
+    <p class="mt-6 text-center text-sm text-gray-600">
+      Akkountingiz bormi?
+      <a href="{% url 'accounts:email_login' %}" class="text-indigo-600 font-medium hover:underline">Kirish</a>
+    </p>
+  </div>
+</body>
+</html>

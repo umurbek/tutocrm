@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Kirish - TutorCRM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4">
+  <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md">
+    <!-- Logo -->
+    <h2 class="text-3xl font-extrabold mb-6 text-center text-indigo-600">TutorCRM</h2>
+    <p class="text-center text-gray-500 mb-6">Xush kelibsiz, tizimga kirish uchun variantni tanlang</p>
+
+    <!-- Email orqali kirish -->
+    <form method="post" action="{% url 'accounts:email_login' %}" class="space-y-4">
+      {% csrf_token %}
+      {% if error %}
+        <p class="text-red-500 text-sm text-center">{{ error }}</p>
+      {% endif %}
+
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Email</label>
+        <input type="email" name="email" required
+               class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition">
+      </div>
+
+      <button type="submit"
+              class="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition">
+        📩 Kod yuborish
+      </button>
+    </form>
+
+    <!-- Signup link -->
+    <p class="text-center text-gray-500 mt-6">
+      Akkountingiz yo‘qmi? 
+      <a href="{% url 'accounts:signup' %}" class="text-indigo-600 font-medium hover:underline">Ro‘yxatdan o‘ting</a>
+    </p>
+  </div>
+</body>
+</html>

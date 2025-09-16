@@ -1,0 +1,34 @@
+<!-- dashboard/templates/dashboard/expense_chart.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Oylik xarajatlar</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="p-6 bg-gray-100">
+  <h2 class="text-xl font-bold mb-4">Oylik xarajatlar</h2>
+  <canvas id="expenseChart" width="400" height="200"></canvas>
+
+  <script>
+    const ctx = document.getElementById('expenseChart').getContext('2d');
+    const expenseChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: {{ labels|safe }},
+        datasets: [{
+          label: 'Xarajatlar (so‘m)',
+          data: {{ data|safe }},
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

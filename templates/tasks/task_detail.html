@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white shadow rounded-lg p-6">
+  <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ task.title }}</h1>
+
+  <div class="flex items-center text-sm text-gray-500 mb-4 space-x-4">
+    <p>📅 Muddat: <span class="font-medium">{{ task.due_date|date:"d.m.Y" }}</span></p>
+    <p>👥 Guruh: <span class="font-medium">{{ task.group.name }}</span></p>
+    <p>✍️ Yaratilgan: {{ task.created_at|date:"d.m.Y H:i" }}</p>
+  </div>
+
+  <p class="text-gray-700 mb-6 leading-relaxed">{{ task.description }}</p>
+
+  <div class="flex items-center space-x-3">
+    <a href="{% url 'tasks:task_list' %}" class="px-3 py-2 bg-gray-200 rounded-lg">⬅️ Orqaga</a>
+
+    {% if task.status == "pending" %}
+      <form action="{% url 'tasks:task_complete' task.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="px-3 py-2 bg-green-600 text-white rounded-lg">
+          ✅ Bajarildi
+        </button>
+      </form>
+    {% else %}
+      <span class="px-4 py-2 bg-green-100 text-green-700 rounded-lg">
+        ✅ Bajarilgan
+      </span>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+<!-- Remix Icon -->
+<link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+
+<!-- Mobil header (faqat kichik ekranlar uchun) -->
+<header class="md:hidden flex items-center justify-between bg-white p-4 shadow fixed top-0 left-0 right-0 z-40">
+  <h1 class="text-xl font-bold text-blue-600">TutorCRM</h1>
+  <button id="openSidebar" class="text-2xl text-gray-600">
+    <i class="ri-menu-line"></i>
+  </button>
+</header>
+
+<!-- Sidebar -->
+<aside id="sidebar" 
+       class="fixed inset-y-0 left-0 w-64 bg-white shadow-md h-screen transform -translate-x-full md:translate-x-0 md:static transition-transform duration-300 z-50">
+  <!-- Logo (faqat md:block) -->
+  <div class="p-6 flex items-center justify-between md:block hidden">
+    <h1 class="text-2xl font-bold text-blue-600">TutorCRM</h1>
+  </div>
+
+  <!-- Mobil yopish tugma -->
+  <button id="closeSidebar" class="md:hidden absolute top-4 right-4 text-gray-500 text-2xl">&times;</button>
+
+  <!-- Navigation -->
+  <nav class="mt-6 space-y-1 pb-16 overflow-y-auto h-full">
+    <a href="{% url 'dashboard:dashboard' %}" 
+       class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 {% if '/dashboard' in request.path %}bg-blue-100 text-blue-600{% endif %}">
+      <i class="ri-home-4-line text-lg"></i>
+      <span class="ml-3">Umumiy</span>
+    </a>
+    <a href="{% url 'groups:group_list' %}" 
+       class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 {% if '/groups' in request.path %}bg-blue-100 text-blue-600{% endif %}">
+      <i class="ri-team-line text-lg"></i>
+      <span class="ml-3">Guruhlar</span>
+    </a>
+    <a href="{% url 'teachers:teacher_list' %}" 
+       class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-indigo-600 {% if '/teachers' in request.path %}bg-blue-100 text-indigo-600{% endif %}">
+      <i class="ri-user-2-line text-lg"></i>
+      <span class="ml-3">O‘qituvchilar</span>
+    </a>
+    <a href="{% url 'students:student_list' %}" 
+       class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 {% if '/students' in request.path %}bg-blue-100 text-blue-600{% endif %}">
+      <i class="ri-user-line text-lg"></i>
+      <span class="ml-3">O‘quvchilar</span>
+    </a>
+    <a href="{% url 'tasks:task_list' %}" 
+       class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-indigo-600 {% if '/tasks' in request.path %}bg-blue-100 text-indigo-600{% endif %}">
+      <i class="ri-task-line text-lg"></i>
+      <span class="ml-3">Vazifalar</span>
+    </a>
+    <a href="{% url 'settings:settings' %}" 
+       class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-indigo-600 {% if '/settings' in request.path %}bg-blue-100 text-indigo-600{% endif %}">
+      <i class="ri-settings-3-line text-lg"></i>
+      <span class="ml-3">Sozlamalar</span>
+    </a>
+    <form method="post" action="{% url 'accounts:logout' %}" class="flex items-center">
+      {% csrf_token %}
+      <button type="submit" class="flex items-center px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 w-full text-left">
+        <i class="ri-logout-box-r-line text-lg"></i>
+        <span class="ml-3">Chiqish</span>
+      </button>
+    </form>
+  </nav>
+</aside>
+
+<!-- Overlay (faqat mobil uchun) -->
+<div id="overlay" class="fixed inset-0 bg-black bg-opacity-40 hidden z-40 md:hidden"></div>
+
+<!-- Mobil pastki navigatsiya -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white shadow-inner border-t flex justify-around items-center py-2 md:hidden z-50">
+  <a href="{% url 'dashboard:dashboard' %}" 
+     class="flex flex-col items-center text-gray-600 hover:text-blue-600 {% if '/dashboard' in request.path %}text-blue-600{% endif %}">
+    <i class="ri-home-4-line text-2xl"></i>
+    <span class="text-xs">Bosh</span>
+  </a>
+
+  <a href="{% url 'chat:index' %}" 
+     class="flex flex-col items-center text-gray-600 hover:text-blue-600 {% if '/chat' in request.path %}text-blue-600{% endif %}">
+    <i class="ri-chat-3-line text-2xl"></i>
+    <span class="text-xs">Chat</span>
+  </a>
+
+  <a href="{% url 'notifications:notification_list' %}" 
+     class="flex flex-col items-center text-gray-600 hover:text-blue-600 {% if '/notifications' in request.path %}text-blue-600{% endif %}">
+    <i class="ri-notification-3-line text-2xl"></i>
+    <span class="text-xs">Bildirish</span>
+  </a>
+
+  <a href="{% url 'accounts:profile' %}" 
+     class="flex flex-col items-center text-gray-600 hover:text-blue-600 {% if '/settings' in request.path %}text-blue-600{% endif %}">
+    <i class="ri-user-3-line text-2xl"></i>
+    <span class="text-xs">Profil</span>
+  </a>
+</nav>
+
+<!-- Script: sidebar toggle -->
+<script>
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  const openBtn = document.getElementById("openSidebar");
+  const closeBtn = document.getElementById("closeSidebar");
+
+  function openSidebar() {
+    sidebar.classList.remove("-translate-x-full");
+    overlay.classList.remove("hidden");
+  }
+
+  function closeSidebar() {
+    sidebar.classList.add("-translate-x-full");
+    overlay.classList.add("hidden");
+  }
+
+  if (openBtn) openBtn.addEventListener("click", openSidebar);
+  if (closeBtn) closeBtn.addEventListener("click", closeSidebar);
+  overlay.addEventListener("click", closeSidebar);
+</script>

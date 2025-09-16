@@ -1,0 +1,27 @@
+{% load static %}
+<form id="statsForm" method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Saqlash</button>
+</form>
+
+<div id="responseMessage" class="mt-4 text-sm text-green-600 hidden">Statistika saqlandi ✅</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $('#statsForm').on('submit', function(e) {
+    e.preventDefault();
+    $.ajax({
+      url: "{% url 'stats_input' %}",
+      type: "POST",
+      data: $(this).serialize(),
+      success: function(response) {
+        $('#responseMessage').removeClass('hidden').text("Statistika saqlandi ✅");
+        setTimeout(() => location.reload(), 1000);  // Dashboardni yangilash
+      },
+      error: function(xhr) {
+        alert("Xatolik yuz berdi: " + xhr.status);
+      }
+    });
+  });
+</script>

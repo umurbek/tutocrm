@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>O‘qituvchi qo‘shish - TutorCRM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-100 p-6">
+  <div class="max-w-2xl mx-auto bg-white shadow-2xl rounded-2xl p-8">
+    <h2 class="text-2xl font-bold text-indigo-600 mb-6 text-center">
+      ➕ Yangi o‘qituvchi qo‘shish
+    </h2>
+
+    {% if messages %}
+      <div class="mb-4">
+        {% for message in messages %}
+          <div class="p-3 mb-2 text-sm rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Ism</label>
+        {{ form.first_name }}
+        {% for error in form.first_name.errors %}
+          <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Familiya</label>
+        {{ form.last_name }}
+        {% for error in form.last_name.errors %}
+          <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Email</label>
+        {{ form.email }}
+        {% for error in form.email.errors %}
+          <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <button type="submit"
+              class="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 active:scale-95 transition">
+        ✅ O‘qituvchi qo‘shish
+      </button>
+    </form>
+
+    <p class="mt-6 text-center">
+      <a href="{% url 'dashboard' %}" class="text-gray-600 hover:underline">
+        ⬅ Dashboardga qaytish
+      </a>
+    </p>
+  </div>
+</body>
+</html>

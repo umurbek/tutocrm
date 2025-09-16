@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}TutorCRM{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    {% include 'partials/sidebar.html' %}
+
+    <!-- Main Content -->
+    <main class="flex-1 md:ml-64 p-6">
+      <!-- Topbar -->
+      <div class="flex justify-end items-center mb-6 relative space-x-4">
+
+        <!-- Notifications -->
+        <div class="relative">
+          <button id="notifButton" class="relative">
+            <i class="ri-notification-3-line text-xl text-gray-500"></i>
+            {% if unread_count > 0 %}
+              <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                {{ unread_count }}
+              </span>
+            {% endif %}
+          </button>
+          <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border py-2 z-50">
+            {% if unread_list %}
+              {% for notif in unread_list %}
+                <a href="{% url 'notifications:notification_read' notif.id %}" class="block px-4 py-2 border-b hover:bg-gray-50">
+                  <p class="font-medium text-sm">{{ notif.title }}</p>
+                  <p class="text-xs text-gray-500">{{ notif.created_at|date:"d.m.Y H:i" }}</p>
+                </a>
+              {% endfor %}
+            {% else %}
+              <p class="text-center text-gray-500 p-4 text-sm">Hech qanday bildirishnoma yo‘q</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Chat -->
+        <a href="{% url 'chat:index' %}">
+          <i class="ri-message-3-line text-xl text-gray-500 hover:text-blue-500"></i>
+        </a>
+
+        <!-- Profil dropdown -->
+        <div class="relative">
+          <!-- Trigger -->
+          <button id="userMenuButton" class="flex items-center space-x-2 focus:outline-none">
+            <img src="{{ avatar_url|default:'/static/images/default-avatar.png' }}" class="w-9 h-9 rounded-full" alt="user">
+            <div class="hidden md:block text-left text-sm">
+              <p class="font-medium">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+              <p class="text-gray-500">{{ request.user.username }}</p>
+            </div>
+            <i class="ri-arrow-down-s-line text-gray-500"></i>
+          </button>
+
+          <!-- Dropdown -->
+          <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border py-2 z-50">
+            <a href="{% url 'accounts:profile' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+              <i class="ri-user-line mr-2"></i> Profil
+            </a>
+            <a href="{% url 'settings:settings' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+              <i class="ri-settings-3-line mr-2"></i> Sozlamalar
+            </a>
+            <form method="post" action="{% url 'accounts:logout' %}" class="w-full">
+              {% csrf_token %}
+              <button type="submit" class="flex items-center px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 w-full text-left">
+                <i class="ri-logout-box-r-line text-lg"></i>
+                <span class="ml-3">Chiqish</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page Content -->
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <!-- JS -->
+  <script>
+    const userMenuButton = document.getElementById('userMenuButton');
+    const userDropdown = document.getElementById('userDropdown');
+    if (userMenuButton) {
+      userMenuButton.addEventListener('click', () => {
+        userDropdown.classList.toggle('hidden');
+      });
+      document.addEventListener('click', (e) => {
+        if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+          userDropdown.classList.add('hidden');
+        }
+      });
+    }
+
+    const notifButton = document.getElementById('notifButton');
+    const notifDropdown = document.getElementById('notifDropdown');
+    if (notifButton) {
+      notifButton.addEventListener('click', () => {
+        notifDropdown.classList.toggle('hidden');
+      });
+      document.addEventListener('click', (e) => {
+        if (!notifButton.contains(e.target) && !notifDropdown.contains(e.target)) {
+          notifDropdown.classList.add('hidden');
+        }
+      });
+    }
+  </script>
+</body>
+</html>

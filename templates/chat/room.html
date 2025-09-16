@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="flex h-[90vh] bg-white rounded-2xl shadow-xl overflow-hidden">
+
+  <!-- Users list -->
+  <div id="users-panel" class="w-full md:w-1/4 border-r bg-gray-50 md:block">
+    <h2 class="font-bold p-4 text-lg text-indigo-600 border-b flex items-center">
+      <i class="fa-solid fa-users mr-2"></i> Foydalanuvchilar
+    </h2>
+    <ul class="overflow-y-auto h-[calc(90vh-3rem)]">
+      {% for u in users %}
+        <li>
+          <a href="#" data-user-id="{{ u.id }}" 
+             class="user-link flex items-center p-3 hover:bg-indigo-50 transition {% if selected_user and selected_user.id == u.id %}bg-indigo-100{% endif %}">
+            <div class="w-10 h-10 rounded-full bg-indigo-200 flex items-center justify-center font-bold text-indigo-700">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <span class="ml-3">{{ u.username }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Chat box -->
+  <div id="chat-panel" class="flex-1 flex flex-col hidden md:flex">
+    <!-- Chat header -->
+    <div class="p-4 border-b flex items-center bg-indigo-600 text-white">
+      <!-- Mobil uchun orqaga tugma -->
+      <button id="back-btn" class="md:hidden mr-3">
+        <i class="fa-solid fa-arrow-left text-xl"></i>
+      </button>
+      <div class="w-10 h-10 rounded-full bg-white text-indigo-600 flex items-center justify-center font-bold">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <h2 id="chat-username" class="ml-3 font-semibold text-lg truncate">Chat</h2>
+    </div>
+
+    <!-- Messages -->
+    <div id="chat-box" 
+         class="flex-1 px-3 py-2 overflow-y-auto bg-gray-100 space-y-3 scroll-smooth">
+      <!-- JS orqali to‘ldiriladi -->
+    </div>
+
+    <!-- Input (pastda fixed) -->
+    <div class="p-3 border-t flex items-center bg-white">
+      <input type="text" id="chat-input" 
+             class="flex-1 border rounded-full px-4 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+             placeholder="✍️ Xabar yozing...">
+      <button id="send-btn" 
+              class="ml-3 bg-indigo-600 text-white px-4 py-2 rounded-full shadow hover:bg-indigo-700 transition">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const usersPanel = document.getElementById("users-panel");
+  const chatPanel = document.getElementById("chat-panel");
+  const backBtn = document.getElementById("back-btn");
+  const chatBox = document.getElementById("chat-box");
+  const chatInput = document.getElementById("chat-input");
+  const sendBtn = document.getElementById("send-btn");
+  const chatUsername = document.getElementById("chat-username");
+
+  let activeUserId = null;
+  let polling = false;
+
+  // CSRF olish
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + "=")) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  const csrftoken = getCookie("csrftoken");
+
+  // ✅ Scroll oxiriga tushirish
+  function scrollToBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  // ✅ Xabarlarni olish
+  async function loadMessages() {
+    if (!activeUserId) return;
+    try {
+      const res = await fetch(`/chat/${activeUserId}/messages/`);
+      const data = await res.json();
+      chatBox.innerHTML = "";
+      data.messages.forEach(m => {
+        const div = document.createElement("div");
+        div.className = "flex " + (m.from_me ? "justify-end" : "justify-start");
+        div.innerHTML = `
+          <div class="max-w-xs md:max-w-md px-4 py-2 rounded-2xl shadow 
+                      ${m.from_me ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-white text-gray-800 rounded-bl-none'}">
+            <p>${m.text}</p>
+            <span class="block text-xs mt-1 text-gray-400">${m.timestamp}</span>
+          </div>
+        `;
+        chatBox.appendChild(div);
+      });
+      scrollToBottom();
+    } catch (err) {
+      console.error("Load error:", err);
+    }
+  }
+
+  // ✅ Polling loop
+  async function pollMessages() {
+    if (!polling) return;
+    await loadMessages();
+    setTimeout(pollMessages, 2000);
+  }
+
+  // ✅ Xabar yuborish
+  function sendMessage() {
+    const text = chatInput.value;
+    if (!text.trim() || !activeUserId) return;
+    fetch(`/chat/${activeUserId}/send/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken
+      },
+      body: JSON.stringify({text})
+    }).then(() => {
+      chatInput.value = "";
+      loadMessages();
+    });
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+  chatInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") sendMessage();
+  });
+
+  // ✅ Foydalanuvchi tanlash
+  document.querySelectorAll(".user-link").forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      activeUserId = link.getAttribute("data-user-id");
+      chatUsername.textContent = "Chat: " + link.querySelector("span").textContent;
+
+      // Mobil: contact panelni yashirish, chatni ko‘rsatish
+      if (window.innerWidth < 768) {
+        usersPanel.classList.add("hidden");
+        chatPanel.classList.remove("hidden");
+      }
+
+      polling = true;
+      pollMessages();
+    });
+  });
+
+  // ✅ Orqaga tugma
+  backBtn.addEventListener("click", () => {
+    chatPanel.classList.add("hidden");
+    usersPanel.classList.remove("hidden");
+    polling = false;
+    activeUserId = null;
+    chatBox.innerHTML = ""; // eski xabarlarni tozaladik
+  });
+</script>
+{% endblock %}

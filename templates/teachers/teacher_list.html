@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="p-6 ml-64">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">O‘qituvchilar</h2>
+        <a href="{% url 'teachers:teacher_create' %}" 
+           class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700">
+           + Yangi o‘qituvchi
+        </a>
+    </div>
+
+    <!-- Search -->
+    <div class="flex items-center justify-between mb-4">
+        <input type="text" placeholder="Izlash..." 
+               class="w-1/3 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white shadow rounded-xl overflow-hidden">
+        <table class="min-w-full border-collapse">
+            <thead class="bg-gray-50 text-gray-700">
+                <tr>
+                    <th class="py-3 px-4 text-left">#</th>
+                    <th class="py-3 px-4 text-left">Ismi</th>
+                    <th class="py-3 px-4 text-left">Email</th>
+                    <th class="py-3 px-4 text-left">Telefon</th>
+                    <th class="py-3 px-4 text-left">Fan</th>
+                    <th class="py-3 px-4 text-left">Kelgan sanasi</th>
+                    <th class="py-3 px-4 text-center">Harakatlar</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y">
+                {% for teacher in teachers %}
+                <tr class="hover:bg-gray-50">
+                    <td class="py-3 px-4">{{ forloop.counter|stringformat:"02d" }}</td>
+                    <td class="py-3 px-4 font-medium text-gray-800">{{ teacher.name }}</td>
+                    <td class="py-3 px-4">{{ teacher.email }}</td>
+                    <td class="py-3 px-4">{{ teacher.phone }}</td>
+                    <td class="py-3 px-4">{{ teacher.subject }}</td>
+                    <td class="py-3 px-4">{{ teacher.join_date }}</td>
+                    <td class="py-3 px-4 text-center space-x-2">
+                        <a href="{% url 'teachers:teacher_update' teacher.pk %}" 
+                           class="text-indigo-600 hover:text-indigo-800">
+                           <i class="ri-edit-2-line"></i>
+                        </a>
+                        <a href="{% url 'teachers:teacher_delete' teacher.pk %}" 
+                           class="text-red-600 hover:text-red-800">
+                           <i class="ri-delete-bin-line"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="py-4 text-center text-gray-500">
+                        Hozircha o‘qituvchilar yo‘q
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

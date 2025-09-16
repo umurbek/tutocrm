@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="p-6 ml-64">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">O‘quvchilar</h2>
+        <a href="{% url 'students:student_create' %}" 
+           class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">
+           + Yangi o‘quvchi
+        </a>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white shadow rounded-xl overflow-hidden">
+        <table class="min-w-full border-collapse">
+            <thead class="bg-gray-50 text-gray-700">
+                <tr>
+                    <th class="py-3 px-4">#</th>
+                    <th class="py-3 px-4">Ismi</th>
+                    <th class="py-3 px-4">Email</th>
+                    <th class="py-3 px-4">Telefon</th>
+                    <th class="py-3 px-4">To‘lovi</th>
+                    <th class="py-3 px-4">Guruhi</th>
+                    <th class="py-3 px-4">Kelgan sanasi</th>
+                    <th class="py-3 px-4 text-center">Amallar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr class="hover:bg-gray-50">
+                    <td class="py-3 px-4">{{ forloop.counter }}</td>
+                    <td class="py-3 px-4 font-medium">{{ student.name }}</td>
+                    <td class="py-3 px-4">{{ student.email }}</td>
+                    <td class="py-3 px-4">{{ student.phone }}</td>
+                    <td class="py-3 px-4">{{ student.payment }}</td>
+                    <td class="py-3 px-4">{{ student.group }}</td>
+                    <td class="py-3 px-4">{{ student.join_date }}</td>
+                    <td class="py-3 px-4 text-center space-x-2">
+                        <a href="{% url 'students:student_update' student.pk %}" class="text-blue-600 hover:text-blue-800">✏️</a>
+                        <a href="{% url 'students:student_delete' student.pk %}" class="text-red-600 hover:text-red-800">🗑</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="py-4 text-center text-gray-500">Hozircha o‘quvchilar yo‘q</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
