@@ -6,17 +6,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-default")
 DEBUG = False
+
 ALLOWED_HOSTS = [
     "tutocrm-production.up.railway.app",
     "localhost",
     "127.0.0.1",
 ]
+
 CSRF_TRUSTED_ORIGINS = ["https://tutocrm-production.up.railway.app"]
+
 
 # ------------------------
 # Custom User
 # ------------------------
 AUTH_USER_MODEL = "accounts.CustomUser"
+
 
 
 # settings.py
@@ -155,9 +159,13 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",  # Google login uchun
 ]
 
+
+
+
 LOGIN_URL = "email_login"
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "email_login"
+
 
 # allauth sozlamalari
 ACCOUNT_EMAIL_REQUIRED = True
@@ -175,13 +183,15 @@ EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
-# settings.py
-SOCIALACCOUNT_LOGIN_ON_GET = True
-ACCOUNT_SIGNUP_REDIRECT_URL = "dashboard"  # Google orqali kira qolsa, qayerga redirect bo‘lsin
-# settings.py
-SOCIALACCOUNT_AUTO_SIGNUP = True     # Oraliq "Sign Up" form chiqmaydi
-ACCOUNT_EMAIL_VERIFICATION = "none"  # Email tasdiqlash ham chiqmaydi
 
+# settings.py
+ACCOUNT_LOGIN_METHODS = {"email"}  # eski ACCOUNT_AUTHENTICATION_METHOD o‘rniga
+ACCOUNT_SIGNUP_FIELDS = ["email", "password1", "password2"]  # eski ACCOUNT_EMAIL_REQUIRED va ACCOUNT_USERNAME_REQUIRED o‘rniga
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
+ACCOUNT_SIGNUP_REDIRECT_URL = "dashboard"
+SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_ADAPTER = "accounts.adapter.NoSignupAdapter"
 
 # ------------------------
