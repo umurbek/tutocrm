@@ -1,11 +1,12 @@
 from pathlib import Path
 import os
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-@_rg(@jfq$kly7i2s&ct&=zytikp&l@e!o*r%xhzmm#_a79o@x"
-DEBUG = True
-ALLOWED_HOSTS = ["*"]
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-default")
+DEBUG = False
+ALLOWED_HOSTS = ["tutocrm.up.railway.app", "localhost", "127.0.0.1"]
 
 # ------------------------
 # Custom User
@@ -120,13 +121,17 @@ WSGI_APPLICATION = "tutocrm.wsgi.application"
 # ------------------------
 # Database
 # ------------------------
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+# ------------------------
+# Database
+# ------------------------
+import dj_database_url
 
+DATABASES = {
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR}/db.sqlite3",
+        conn_max_age=600,
+    )
+}
 # ------------------------
 # Password validation
 # ------------------------
@@ -158,13 +163,13 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 # ------------------------
 # Email sozlamalari
 # ------------------------
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "umurbekfaridov8@gmail.com"
-EMAIL_HOST_PASSWORD = "iwycodnvbojkxiyh"  # Gmail App Password ishlatish shart!
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
 # settings.py
 SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_SIGNUP_REDIRECT_URL = "dashboard"  # Google orqali kira qolsa, qayerga redirect bo‘lsin
@@ -187,23 +192,10 @@ USE_TZ = True
 # ------------------------
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
-# settings.py ning pastki qismida
-
-# Statik fayllarning URL manzili (brauzer uchun)
-STATIC_URL = 'static/'
-
-# **********************************************
-# Quyidagi qatorni qo'shing (Xatolikni tuzatish uchun)
-# Bu collectstatic buyrug'i statik fayllarni yig'adigan manzil
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# **********************************************
-
-# Loyihaning o'zidagi statik fayllar uchun qo'shimcha papka (ixtiyoriy)
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
 STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_ROOT = BASE_DIR / "media"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ------------------------
 # Default primary key

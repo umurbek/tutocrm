@@ -1,0 +1,138 @@
+/* static/css/jazzmin_glass.css - Kengaytirilgan Ajoyib Dizayn */
+
+/* 1. Global Sozlamalar va Fon */
+body {
+    /* Fonni biroz to'qroq va xiraligi yuqoriroq qilamiz (kontrast uchun) */
+    background-image: url('https://picsum.photos/1920/1080?blur=6');
+    background-size: cover;
+    background-attachment: fixed;
+    background-color: transparent !important;
+}
+
+/* 2. Glassmorphism Effekti - Kontrast va Chuqurlikni Oshirish */
+.card,
+.content-wrapper,
+.main-sidebar,
+.main-header,
+.navbar {
+    /* Shaffoflikni biroz kamaytiramiz (chunki balandlikni oshirdik) */
+    background: rgba(255, 255, 255, 0.1) !important; /* Endi juda shaffof (0.1) */
+    backdrop-filter: blur(15px) !important; /* Xiralikni oshiramiz */
+    -webkit-backdrop-filter: blur(15px) !important;
+    
+    /* Chiziq va Yaltiroq Soya */
+    border-radius: 18px !important; /* Burchaklarni yanada yumaloq qilamiz */
+    border: 1px solid rgba(255, 255, 255, 0.4) !important; /* Yorug'roq chegara */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.3) inset; /* Chuqur va Ichki Soya */
+    transition: all 0.3s ease; /* Elementlar harakatlanganda silliq bo'lishi uchun */
+}
+
+/* Glass elementlarning ustiga borganingizda (hover) yorqinlik berish */
+.card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+
+/* Glass elementlarga yumshoq gradient berish */
+.card, .content-wrapper, .main-sidebar, .main-header, .navbar {
+    /* Eski: background: rgba(255, 255, 255, 0.1) !important; */
+    
+    /* Yangi: Pastki va ustki qismda yengil gradient */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05)) !important;
+    
+    backdrop-filter: blur(15px) !important;
+    /* ... qolgan sozlamalar o'zgarmaydi ... */
+}
+/* 3. **NAVBAR (Yuqori Panel) Balandligini Oshirish** */
+.main-header, .navbar {
+    min-height: 70px !important; /* Asosiy balandlikni oshiramiz (standart 50px) */
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+/* Navbar elementlarini vertikal markazlashtirish */
+.navbar-nav .nav-link {
+    line-height: 50px; /* Balandlikni hisobga olib tekislash */
+    height: 100%;
+    display: flex;
+    align-items: center; /* Elementlarni vertikal markazga olib keladi */
+}
+
+
+/* 4. Matn Ranglari va Kontrasti */
+.content-wrapper,
+.card-header,
+.card-title,
+.main-sidebar a,
+.nav-link,
+.brand-text,
+.navbar-nav a {
+    color: #111 !important; /* Matnni biroz qoraroq qilamiz */
+    font-weight: 600; /* Qalinroq matn */
+}
+
+/* 5. Navigatsiya Yozuvini YASHIRISH (Avvalgi qadamdan) */
+.brand-text.font-weight-light {
+    display: none !important;
+}
+
+/* 6. Sidebar (Yon menyu) ni moslashtirish */
+.main-sidebar {
+    opacity: 0.98; /* Yon menyuni deyarli shaffofliksiz qilamiz (o'qish uchun) */
+    transition: width 0.3s ease;
+}
+
+/* Glass effekti fonni yashirib qo'ymasligi uchun */
+.layout-fixed .main-sidebar {
+    left: 0;
+}
+/* Sidebar uchun yangi kenglikni belgilash */
+.main-sidebar, .main-sidebar::before {
+    width: 300px !important; /* Yangi kenglik */
+    /* Agar sizda yopiq (collapsed) rejim ham ishlatilsa */
+    transition: width 0.3s ease;
+}
+
+/* Yopiq (collapsed) holatdagi menyuni ham moslashtirish (ixtiyoriy) */
+.sidebar-collapse .main-sidebar {
+    margin-left: -300px !important; 
+}
+.sidebar-mini.sidebar-collapse .main-sidebar.sidebar-focused {
+    width: 300px !important;
+}
+/* Sidebar kengayganda kontent maydonining joylashuvini moslashtirish */
+.content-wrapper,
+.main-footer,
+.main-header {
+    margin-left: 300px !important; /* Yon menyu kengligiga mos kelishi kerak */
+    transition: margin-left 0.3s ease;
+}
+
+/* Yopiq (collapsed) holatda kontent maydonini yana chapga surish */
+.sidebar-collapse .content-wrapper,
+.sidebar-collapse .main-footer,
+.sidebar-collapse .main-header {
+    margin-left: 60px !important; /* Jazzmin default kichik menyu kengligi */
+}
+/* 1. Menyuni Kengaytirish */
+.main-sidebar, .main-sidebar::before {
+    width: 300px !important; /* Kengaytirilgan holat */
+    transition: width 0.3s ease;
+}
+/* 2. Kichraytirilgan (Collapsed) holat - Ikonka rejimi */
+.sidebar-collapse .main-sidebar, .sidebar-collapse .main-sidebar::before {
+    width: 50px !important; /* Kichraytirilgan kenglik (faqat ikonkalar) */
+    margin-left: 0px !important; /* Menyuni ekrandan chiqarib yubormaslik */
+}
+
+/* Kichraytirilganda kontentni moslash */
+.sidebar-collapse .content-wrapper,
+.sidebar-collapse .main-footer,
+.sidebar-collapse .main-header {
+    margin-left: 0px !important; /* Kichraytirilgan menyu kengligiga moslash */
+}
+
+/* 3. Menyu yozuvlarini yashirish */
+/* Kichraytirilgan rejimda yozuvlar ko'rinmasligi kerak */
+.sidebar-collapse .nav-sidebar .nav-link p {
+    display: none !important;
+}

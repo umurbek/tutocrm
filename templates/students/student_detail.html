@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %} 
+
+{% block title %}{{ student.user.get_full_name }} | Profil{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+        <div class="flex items-center gap-5">
+            <div class="relative">
+                <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white text-3xl shadow-lg shadow-blue-500/20">
+                    {{ student.user.first_name|slice:":1" }}{{ student.user.last_name|slice:":1" }}
+                </div>
+                <div class="absolute -bottom-1 -right-1 w-6 h-6 {% if student.is_active %}bg-emerald-500{% else %}bg-red-500{% endif %} border-4 border-[#050b1a] rounded-full"></div>
+            </div>
+            <div>
+                <h2 class="text-3xl font-black text-white tracking-tight">{{ student.user.get_full_name }}</h2>
+                <p class="text-slate-500 flex items-center gap-2">
+                    <i class="fa-solid fa-at text-blue-500/50"></i> @{{ student.user.username }}
+                </p>
+            </div>
+        </div>
+        
+        <div class="flex gap-3 w-full md:w-auto">
+            <a href="{% url 'students:student_update' student.pk %}" class="flex-1 md:flex-none flex items-center justify-center px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-amber-400 font-bold hover:bg-amber-500/10 transition-all">
+                <i class="fa-solid fa-user-pen mr-2"></i> Tahrirlash
+            </a>
+            <a href="{% url 'students:student_list' %}" class="flex-1 md:flex-none flex items-center justify-center px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-slate-400 font-bold hover:text-white transition-all">
+                <i class="fa-solid fa-arrow-rotate-left mr-2"></i> Qaytish
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="relative overflow-hidden bg-[#0a1631]/50 border border-white/5 backdrop-blur-md rounded-[2rem] p-6 group">
+            <div class="absolute -right-4 -top-4 text-6xl text-blue-500/5 group-hover:text-blue-500/10 transition-colors">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Hozirgi Guruh</p>
+            <h3 class="text-xl font-bold text-white mb-1">{{ group.name|default:"Guruhsiz" }}</h3>
+            {% if teacher %}
+                <p class="text-sm text-slate-400 italic">Ustoz: <span class="text-blue-400">{{ teacher.user.get_full_name }}</span></p>
+            {% else %}
+                <p class="text-sm text-red-400/60 italic">O'qituvchi biriktirilmagan</p>
+            {% endif %}
+        </div>
+
+        <div class="relative overflow-hidden bg-[#0a1631]/50 border border-white/5 backdrop-blur-md rounded-[2rem] p-6 group">
+            <div class="absolute -right-4 -top-4 text-6xl text-purple-500/5 group-hover:text-purple-500/10 transition-colors">
+                <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">O'zlashtirish</p>
+            <h3 class="text-xl font-bold text-white mb-1">{{ task_stats.completed_tasks }} <span class="text-slate-500 text-sm font-normal">/ {{ task_stats.total_tasks }} ta vazifa</span></h3>
+            <p class="text-sm text-slate-400 italic">O'rtacha ko'rsatkich: <span class="text-purple-400 font-bold">{{ task_stats.average_score }}%</span></p>
+        </div>
+
+        <div class="relative overflow-hidden bg-[#0a1631]/50 border {% if payment_stats.is_in_debt == 'Ha' %}border-red-500/20{% else %}border-emerald-500/20{% endif %} backdrop-blur-md rounded-[2rem] p-6 group">
+            <div class="absolute -right-4 -top-4 text-6xl {% if payment_stats.is_in_debt == 'Ha' %}text-red-500/5{% else %}text-emerald-500/5{% endif %}">
+                <i class="fa-solid fa-credit-card"></i>
+            </div>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">To'lov Holati</p>
+            <h3 class="text-xl font-bold mb-1">
+                {% if payment_stats.is_in_debt == 'Ha' %}
+                    <span class="text-red-500 uppercase tracking-tighter">Qarzdorlik bor</span>
+                {% else %}
+                    <span class="text-emerald-500 uppercase tracking-tighter">To'langan</span>
+                {% endif %}
+            </h3>
+            <p class="text-sm text-slate-400 italic">Keyingi sana: <span class="text-white">{{ payment_stats.upcoming_due_date|default:"Belgilanmagan" }}</span></p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-[#0a1631]/30 border border-white/5 rounded-[2.5rem] p-8">
+                <h3 class="text-lg font-bold text-white mb-6 flex items-center">
+                    <i class="fa-solid fa-id-card mr-3 text-blue-500"></i> Ma'lumotlar
+                </h3>
+                
+                <div class="space-y-5">
+                    <div class="flex justify-between items-center group">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Email</span>
+                        <span class="text-sm text-slate-200 group-hover:text-blue-400 transition-colors">{{ student.user.email|default:"-" }}</span>
+                    </div>
+                    <div class="flex justify-between items-center group border-t border-white/5 pt-4">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Telefon</span>
+                        <span class="text-sm text-slate-200 group-hover:text-blue-400 transition-colors">{{ student.user.phone|default:"-" }}</span>
+                    </div>
+                    <div class="flex justify-between items-center group border-t border-white/5 pt-4">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Tug'ilgan kuni</span>
+                        <span class="text-sm text-slate-200">{{ student.date_of_birth|default:"-" }}</span>
+                    </div>
+                    <div class="flex justify-between items-center group border-t border-white/5 pt-4">
+                        <span class="text-xs font-bold text-slate-500 uppercase">A’zo bo’ldi</span>
+                        <span class="text-sm text-slate-200">{{ student.user.date_joined|date:"d M, Y" }}</span>
+                    </div>
+                </div>
+
+                <div class="mt-10 pt-8 border-t border-white/5">
+                    <h4 class="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mb-4">Vazifalar hisoboti</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <div class="bg-blue-500/10 border border-blue-500/20 px-3 py-2 rounded-xl flex items-center gap-2">
+                            <span class="text-blue-400 font-black text-lg">{{ task_stats.pending_review }}</span>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase leading-none">Kutilmoqda</span>
+                        </div>
+                        <div class="bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-xl flex items-center gap-2">
+                            <span class="text-red-400 font-black text-lg">{{ task_stats.overdue_tasks }}</span>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase leading-none">Muddati o'tgan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="lg:col-span-2 bg-[#0a1631]/30 border border-white/5 rounded-[2.5rem] overflow-hidden">
+            <div class="p-8 border-b border-white/5 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white flex items-center">
+                    <i class="fa-solid fa-list-check mr-3 text-purple-500"></i> Oxirgi 5 ta Topshiriq
+                </h3>
+                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Barchasi</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-[10px] font-black text-slate-600 uppercase tracking-widest">
+                            <th class="px-8 py-4">Vazifa nomi</th>
+                            <th class="px-8 py-4">Topshirilgan vaqt</th>
+                            <th class="px-8 py-4 text-center">Baho</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        {% for submission in task_stats.last_5_submissions %}
+                            <tr class="group hover:bg-white/[0.02] transition-colors">
+                                <td class="px-8 py-5 text-sm font-bold text-slate-200 group-hover:text-purple-400 transition-colors">
+                                    {{ submission.task.title }}
+                                </td>
+                                <td class="px-8 py-5 text-xs text-slate-500 font-mono uppercase">
+                                    {{ submission.completed_at|date:"d M, H:i" }}
+                                </td>
+                                <td class="px-8 py-5 text-center">
+                                    {% if submission.score is not None %}
+                                        <div class="inline-flex items-center justify-center w-10 h-10 rounded-xl font-black text-sm
+                                            {% if submission.score >= 80 %}bg-emerald-500/10 text-emerald-500 border border-emerald-500/20
+                                            {% elif submission.score >= 60 %}bg-amber-500/10 text-amber-500 border border-amber-500/20
+                                            {% else %}bg-red-500/10 text-red-500 border border-red-500/20{% endif %}">
+                                            {{ submission.score }}
+                                        </div>
+                                    {% else %}
+                                        <span class="text-slate-600 font-black text-lg">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3" class="px-8 py-20 text-center">
+                                    <div class="flex flex-col items-center opacity-20">
+                                        <i class="fa-solid fa-box-open text-5xl mb-4"></i>
+                                        <p class="text-sm italic tracking-widest">Topshiriqlar hali mavjud emas</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

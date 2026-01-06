@@ -1,0 +1,67 @@
+<nav class="space-y-3 px-4">
+    <a href="{% url 'accounts:dashboard' %}" 
+       class="group flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 
+       {% if '/dashboard' in request.path %}
+       bg-indigo-600 shadow-[0_10px_20px_-5px_rgba(79,70,229,0.5)] text-white
+       {% else %}
+       text-slate-400 hover:bg-white/[0.05] hover:text-indigo-400
+       {% endif %}">
+        <i class="fa-solid fa-house-chimney text-lg group-hover:scale-110 transition-transform"></i>
+        <span class="ml-4 font-bold text-sm tracking-wide">Umumiy</span>
+        {% if '/dashboard' in request.path %}
+        <div class="ml-auto w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_#fff]"></div>
+        {% endif %}
+    </a>
+
+    <a href="{% url 'groups:group_list' %}" 
+       class="group flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300
+       {% if '/groups' in request.path %}
+       bg-indigo-600 shadow-[0_10px_20px_-5px_rgba(79,70,229,0.5)] text-white
+       {% else %}
+       text-slate-400 hover:bg-white/[0.05] hover:text-indigo-400
+       {% endif %}">
+        <i class="fa-solid fa-users-rectangle text-lg group-hover:scale-110 transition-transform"></i>
+        <span class="ml-4 font-bold text-sm tracking-wide">Guruhim</span>
+        {% if '/groups' in request.path %}
+        <div class="ml-auto w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_#fff]"></div>
+        {% endif %}
+    </a>
+
+    <a href="{% url 'tasks:task_list' %}" 
+       class="group flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300
+       {% if '/tasks' in request.path %}
+       bg-indigo-600 shadow-[0_10px_20px_-5px_rgba(79,70,229,0.5)] text-white
+       {% else %}
+       text-slate-400 hover:bg-white/[0.05] hover:text-indigo-400
+       {% endif %}">
+        <i class="fa-solid fa-list-check text-lg group-hover:scale-110 transition-transform"></i>
+        <span class="ml-4 font-bold text-sm tracking-wide">Vazifalar</span>
+    </a>
+
+    <a href="{% url 'notifications:notification_list' %}" 
+       class="group flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300
+       {% if '/notifications' in request.path %}
+       bg-indigo-600 shadow-[0_10px_20px_-5px_rgba(79,70,229,0.5)] text-white
+       {% else %}
+       text-slate-400 hover:bg-white/[0.05] hover:text-indigo-400
+       {% endif %}">
+        <div class="relative">
+            <i class="fa-solid fa-bell text-lg group-hover:scale-110 transition-transform"></i>
+            <span class="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full border-2 border-[#050b1a]"></span>
+        </div>
+        <span class="ml-4 font-bold text-sm tracking-wide">Bildirishnomalar</span>
+    </a>
+
+    <div class="my-6 border-t border-white/5 mx-4"></div>
+
+    <a href="{% url 'accounts:profile_edit' %}" 
+       class="group flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300
+       {% if '/accounts/profile/edit' in request.path %}
+       bg-indigo-600 shadow-[0_10px_20px_-5px_rgba(79,70,229,0.5)] text-white
+       {% else %}
+       text-slate-400 hover:bg-white/[0.05] hover:text-indigo-400
+       {% endif %}">
+        <i class="fa-solid fa-user-gear text-lg group-hover:rotate-12 transition-transform"></i>
+        <span class="ml-4 font-bold text-sm tracking-wide">Profil Sozlamalari</span>
+    </a>
+</nav>

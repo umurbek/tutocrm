@@ -1,0 +1,71 @@
+<nav class="space-y-3 p-4 bg-[#050b1a] min-h-screen border-r border-white/5">
+    {% comment %} <div class="px-4 mb-10 mt-4 text-2xl font-black text-white tracking-tighter italic">
+        Tutor<span class="text-blue-500 tracking-normal">CRM</span>
+    </div> {% endcomment %}
+
+    <a href="{% url 'accounts:dashboard' %}" 
+       class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 group
+       {% if '/dashboard' in request.path %}
+           bg-blue-600 text-white shadow-[0_10px_20px_-5px_rgba(37,99,235,0.4)]
+       {% else %}
+           text-slate-500 hover:bg-[#0a1631] hover:text-blue-400
+       {% endif %}">
+        <i class="fa-solid fa-chart-pie text-xl"></i>
+        <span class="ml-4 font-bold tracking-tight">Umumiy Panel</span>
+    </a>
+
+    <a href="{% url 'groups:group_list' %}" 
+       class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 group
+       {% if '/groups' in request.path %}
+           bg-blue-600 text-white shadow-[0_10px_20px_-5px_rgba(37,99,235,0.4)]
+       {% else %}
+           text-slate-500 hover:bg-[#0a1631] hover:text-blue-400
+       {% endif %}">
+        <i class="fa-solid fa-layer-group text-xl"></i>
+        <span class="ml-4 font-bold tracking-tight">Guruhlarim</span>
+    </a>
+
+    <a href="{% url 'students:student_list' %}" 
+       class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 group
+       {% if '/students' in request.path %}
+           bg-blue-600 text-white shadow-[0_10px_20px_-5px_rgba(37,99,235,0.4)]
+       {% else %}
+           text-slate-500 hover:bg-[#0a1631] hover:text-blue-400
+       {% endif %}">
+        <i class="fa-solid fa-user-graduate text-xl"></i>
+        <span class="ml-4 font-bold tracking-tight">O‘quvchilar</span>
+    </a>
+
+    <a href="{% url 'tasks:task_list' %}" 
+       class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 group
+       {% if '/tasks' in request.path %}
+           bg-amber-500 text-white shadow-[0_10px_20px_-5px_rgba(245,158,11,0.4)]
+       {% else %}
+           text-slate-500 hover:bg-[#0a1631] hover:text-amber-400
+       {% endif %}">
+        <i class="fa-solid fa-list-check text-xl"></i>
+        <span class="ml-4 font-bold tracking-tight">Vazifalar</span>
+    </a>
+
+    <a href="{% url 'notifications:notification_list' %}" 
+       class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 group
+       {% if '/notifications' in request.path %}
+           bg-blue-600 text-white shadow-[0_10px_20px_-5px_rgba(37,99,235,0.4)]
+       {% else %}
+           text-slate-500 hover:bg-[#0a1631] hover:text-blue-400
+       {% endif %}">
+        <div class="relative">
+            <i class="fa-solid fa-bell text-xl"></i>
+            <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#050b1a]"></span>
+        </div>
+        <span class="ml-4 font-bold tracking-tight">Xabarlar</span>
+    </a>
+
+    <div class="pt-10 border-t border-white/5 mt-auto">
+        <a href="{% url 'settings:settings' %}" 
+           class="flex items-center px-5 py-4 rounded-2xl text-slate-600 hover:text-white transition-colors">
+            <i class="fa-solid fa-sliders text-xl"></i>
+            <span class="ml-4 font-bold tracking-tight">Sozlamalar</span>
+        </a>
+    </div>
+</nav>
