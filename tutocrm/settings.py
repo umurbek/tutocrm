@@ -6,7 +6,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-default")
 DEBUG = False
-ALLOWED_HOSTS = ["tutocrm.up.railway.app", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [
+    "tutocrm.up.railway.app",
+    "localhost",
+    "127.0.0.1",
+]
 
 # ------------------------
 # Custom User
