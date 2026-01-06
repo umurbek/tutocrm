@@ -6,7 +6,6 @@ from django.shortcuts import redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
     # bosh sahifa login sahifaga yuboradi
     path('', lambda request: redirect('accounts:email_login'), name='home'),
 
