@@ -11,6 +11,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
 ]
+CSRF_TRUSTED_ORIGINS = ["https://tutocrm-production.up.railway.app"]
 
 # ------------------------
 # Custom User
