@@ -1,49 +1,135 @@
 {% extends 'base.html' %}
 
+{% block title %}Tizim Sozlamalari | TutorCRM{% endblock %}
+
 {% block content %}
-<div class="p-6 ml-64">
-    <div class="bg-white shadow rounded-xl p-6 max-w-2xl">
-        <h2 class="text-2xl font-bold mb-4">Sozlamalar</h2>
+<div class="max-w-4xl mx-auto">
+    <div class="flex items-center gap-4 mb-10">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white text-3xl shadow-[0_10px_30px_-5px_rgba(79,70,229,0.5)]">
+            <i class="fa-solid fa-sliders"></i>
+        </div>
+        <div>
+            <h1 class="text-3xl font-black text-white tracking-tight">Sozlamalar</h1>
+            <p class="text-slate-500 text-sm">CRM interfeysi, tili va asosiy rekvizitlarini boshqarish.</p>
+        </div>
+    </div>
 
-        <form method="POST" enctype="multipart/form-data" class="space-y-6">
-            {% csrf_token %}
-
-            <!-- CRM nomi -->
-            <div>
-                <label class="block mb-1 font-medium text-gray-700">CRM nomi</label>
-                {{ form.crm_name }}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-1 space-y-4">
+            <div class="bg-[#0a1631]/40 border border-white/5 rounded-[2rem] p-6 backdrop-blur-md">
+                <nav class="space-y-2">
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm transition-all">
+                        <i class="fa-solid fa-gears"></i> Umumiy
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 rounded-xl font-bold text-sm transition-all">
+                        <i class="fa-solid fa-shield-halved"></i> Xavfsizlik
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 rounded-xl font-bold text-sm transition-all">
+                        <i class="fa-solid fa-bell"></i> Bildirishnomalar
+                    </a>
+                </nav>
             </div>
+        </div>
 
-            <!-- Til -->
-            <div>
-                <label class="block mb-1 font-medium text-gray-700">Til</label>
-                {{ form.language }}
-            </div>
+        <div class="lg:col-span-2">
+            <div class="bg-[#0a1631]/50 border border-white/5 backdrop-blur-md rounded-[2.5rem] p-8 md:p-10 shadow-2xl relative overflow-hidden">
+                <form method="POST" enctype="multipart/form-data" class="space-y-8">
+                    {% csrf_token %}
 
-            <!-- Valyuta -->
-            <div>
-                <label class="block mb-1 font-medium text-gray-700">Valyuta</label>
-                {{ form.currency }}
-            </div>
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">CRM nomi</label>
+                        {{ form.crm_name }}
+                        <p class="text-[10px] text-slate-600 italic">Ushbu nom brauzer sarlavhasi va bildirishnomalarda ko'rinadi.</p>
+                    </div>
 
-            <!-- Logo -->
-            <div>
-                <label class="block mb-1 font-medium text-gray-700">Logo</label>
-                
-                {% if form.instance.logo %}
-                    <img src="{{ form.instance.logo.url }}" alt="CRM Logo" class="h-16 mb-2 rounded shadow">
-                {% endif %}
-                
-                {{ form.logo }}
-            </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Tizim tili</label>
+                            <div class="relative">
+                                {{ form.language }}
+                            </div>
+                        </div>
 
-            <div class="flex justify-end space-x-3">
-                <button type="submit" 
-                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700">
-                    Saqlash
-                </button>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Asosiy valyuta</label>
+                            <div class="relative">
+                                {{ form.currency }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-white/[0.02] border border-white/5 rounded-3xl space-y-4">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Brending (Logo)</label>
+                        
+                        <div class="flex items-center gap-6">
+                            <div class="relative group">
+                                {% if form.instance.logo %}
+                                    <img src="{{ form.instance.logo.url }}" alt="CRM Logo" 
+                                         class="w-20 h-20 object-contain rounded-2xl bg-[#050b1a] border border-white/10 p-2 group-hover:border-indigo-500 transition-colors">
+                                {% else %}
+                                    <div class="w-20 h-20 rounded-2xl bg-slate-800 flex items-center justify-center text-slate-600 border border-dashed border-white/20">
+                                        <i class="fa-solid fa-image text-2xl"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex-1">
+                                <div class="file-input-wrapper">
+                                    {{ form.logo }}
+                                </div>
+                                <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">Tavsiya etilgan o'lcham: 512x512px (PNG yoki SVG).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-4 border-t border-white/5">
+                        <button type="submit" 
+                                class="px-10 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black uppercase tracking-widest shadow-[0_15px_30px_-10px_rgba(79,70,229,0.4)] transition-all active:scale-95 flex items-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            O'zgarishlarni saqlash
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
+
+<style>
+    /* Custom Styles for Form Elements */
+    input[type="text"], select {
+        width: 100% !important;
+        padding: 1rem 1.25rem !important;
+        background-color: rgba(5, 11, 26, 0.4) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 1.25rem !important;
+        color: #e2e8f0 !important;
+        font-size: 0.875rem !important;
+        transition: all 0.3s ease !important;
+    }
+    input:focus, select:focus {
+        border-color: rgba(99, 102, 241, 0.5) !important;
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.1) !important;
+        outline: none !important;
+    }
+    /* Logo input stylization */
+    input[type="file"] {
+        font-size: 0.75rem;
+        color: #64748b;
+    }
+    input[type="file"]::file-selector-button {
+        padding: 0.5rem 1rem;
+        border-radius: 0.75rem;
+        border: none;
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        font-weight: bold;
+        margin-right: 1rem;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    input[type="file"]::file-selector-button:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+</style>
 {% endblock %}

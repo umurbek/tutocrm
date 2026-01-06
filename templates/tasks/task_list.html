@@ -1,53 +1,156 @@
 {% extends "base.html" %}
 
+{% block title %}Vazifalar jurnali | TutorCRM{% endblock %}
+
 {% block content %}
-<h1 class="text-2xl font-bold mb-6">📋 Vazifalar ro‘yxati</h1>
+<div class="max-w-7xl mx-auto px-4 md:px-0">
+    
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+        <div>
+            <h1 class="text-3xl font-black text-white tracking-tight flex items-center gap-3">
+                <i class="fa-solid fa-list-check text-indigo-500"></i>
+                Vazifalar ro‘yxati
+            </h1>
+            <p class="text-slate-500 text-sm mt-1">O'quv jarayoni va topshiriqlar nazorati.</p>
+        </div>
 
-<div class="bg-white shadow rounded-lg">
-  <table class="min-w-full divide-y divide-gray-200">
-    <thead class="bg-gray-50">
-      <tr>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sarlavha</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Muddat</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Holati</th>
-        <th class="px-6 py-3"></th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-gray-200">
-      {% for task in tasks %}
-        <tr>
-          <td class="px-6 py-4">
-            <a href="{% url 'tasks:task_detail' task.id %}" class="text-blue-600 hover:underline">
-              {{ task.title }}
+        {% if user.is_boss or user.is_superuser or user.is_teacher %}
+            <a href="{% url 'tasks:task_create' %}" 
+               class="flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl shadow-[0_10px_20px_-5px_rgba(79,70,229,0.4)] transition-all duration-300 active:scale-95 font-bold">
+                <i class="fa-solid fa-plus-circle mr-2"></i> Yangi vazifa
             </a>
-          </td>
-          <td class="px-6 py-4">{{ task.due_date|date:"d.m.Y" }}</td>
-          <td class="px-6 py-4">
-            {% if task.status == "pending" %}
-              <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full">
-                ⏳ Bajarilmagan
-              </span>
-            {% else %}
-              <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
-                ✅ Bajarilgan
-              </span>
-            {% endif %}
-          </td>
-          <td class="px-6 py-4 text-right">
-            <a href="{% url 'tasks:task_update' task.id %}" class="text-indigo-600 hover:text-indigo-900 mr-3">✏️</a>
-            <a href="{% url 'tasks:task_delete' task.id %}" class="text-red-600 hover:text-red-900">🗑️</a>
-          </td>
-        </tr>
-      {% empty %}
-        <tr>
-          <td colspan="4" class="px-6 py-4 text-center text-gray-500">Hech qanday vazifa yo‘q.</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+        {% endif %}
+    </div>
 
-<div class="mt-4">
-  <a href="{% url 'tasks:task_create' %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg">➕ Yangi vazifa</a>
+    <div class="bg-[#0a1631]/30 border border-white/5 backdrop-blur-md rounded-[2.5rem] overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-white/[0.02] border-b border-white/5">
+                        <th class="py-5 px-8 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Topshiriq</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Guruh / Tur</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Muddat</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                            {% if user.is_student %}Sizning Holatingiz{% else %}O'zlashtirish{% endif %}
+                        </th>
+                        <th class="py-5 px-8 text-right text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Amallar</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for task in tasks %}
+                    <tr class="group hover:bg-white/[0.03] transition-all duration-300 {% if not task.target_group %} border-l-4 border-amber-500/30 {% endif %}">
+                        
+                        <td class="py-6 px-8">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform shadow-lg shadow-indigo-500/5">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                </div>
+                                <a href="{% url 'tasks:task_detail' task.id %}" class="text-white font-bold hover:text-indigo-400 transition-colors tracking-tight">
+                                    {{ task.title }}
+                                </a>
+                            </div>
+                        </td>
+                        
+                        <td class="py-6 px-6">
+                            <div class="flex items-center gap-2">
+                                {% if task.target_group %}
+                                    <span class="px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold">
+                                        <i class="fa-solid fa-users mr-1.5 text-[10px]"></i> {{ task.target_group.name }}
+                                    </span>
+                                {% else %}
+                                    <span class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-lg text-xs font-bold">
+                                        <i class="fa-solid fa-user-lock mr-1.5 text-[10px]"></i> Shaxsiy
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <td class="py-6 px-6">
+                            <div class="flex flex-col">
+                                <span class="text-sm text-slate-300 font-medium">{{ task.due_date|date:"d.m.Y" }}</span>
+                                <span class="text-[10px] text-slate-600 uppercase font-black tracking-tighter mt-0.5">Deadline</span>
+                            </div>
+                        </td>
+                        
+                        <td class="py-6 px-6">
+                            {% if user.is_student %}
+                                {% if task.is_assigned_completed %}
+                                    <span class="inline-flex items-center px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                                        <i class="fa-solid fa-check-circle mr-1.5"></i> Bajarilgan
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse mr-2"></span> Kutilmoqda
+                                    </span>
+                                {% endif %}
+                            {% else %}
+                                <div class="flex flex-col gap-1.5 max-w-[120px]">
+                                    <div class="flex justify-between text-[9px] font-black uppercase text-slate-500">
+                                        <span>Topshirdi:</span>
+                                        <span class="text-indigo-400">{{ task.submissions.count }}/{{ task.target_group.students.count|default:"0" }}</span>
+                                    </div>
+                                    <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                        <div class="h-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.4)] transition-all duration-500" 
+                                             style="width: {% if task.target_group.students.count > 0 %}{% widthratio task.submissions.count task.target_group.students.count 100 %}{% else %}0{% endif %}%">
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                        
+                        <td class="py-6 px-8 text-right whitespace-nowrap">
+                            <div class="flex justify-end gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                {% if user.is_boss or user.is_superuser or user.is_teacher %}
+                                    <a href="{% url 'tasks:task_detail' task.id %}" 
+                                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all shadow-lg"
+                                       title="Javoblarni ko'rish">
+                                        <i class="fa-solid fa-graduation-cap text-xs"></i>
+                                    </a>
+
+                                    <a href="{% url 'tasks:task_update' task.id %}" 
+                                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:bg-amber-500 hover:text-white transition-all shadow-lg"
+                                       title="Tahrirlash">
+                                        <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                    </a>
+                                    
+                                    <a href="{% url 'tasks:task_delete' task.id %}" 
+                                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:bg-red-500 hover:text-white transition-all shadow-lg"
+                                       title="O'chirish">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </a>
+                                {% endif %}
+                                
+                                <a href="{% url 'tasks:task_detail' task.id %}" 
+                                   class="w-9 h-9 flex items-center justify-center rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all shadow-lg">
+                                    <i class="fa-solid fa-eye text-xs"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="py-24 text-center">
+                            <div class="flex flex-col items-center">
+                                <div class="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mb-6 border border-white/5 shadow-inner">
+                                    <i class="fa-solid fa-folder-open text-5xl text-slate-700"></i>
+                                </div>
+                                <h3 class="text-2xl font-black text-slate-400 italic">Vazifalar jurnali bo‘sh</h3>
+                                <p class="text-slate-600 text-sm mt-2 max-w-xs mx-auto">Hozircha hech qanday topshiriq biriktirilmagan yoki sizga tegishli vazifalar mavjud emas.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-8 flex flex-col md:flex-row gap-4 items-center justify-between px-6 py-4 rounded-3xl bg-white/5 border border-white/5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+        <div class="flex items-center gap-6">
+            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-indigo-500"></span> Jami vazifalar: {{ tasks.count }}</span>
+            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Shaxsiy: {{ personal_tasks_count|default:"0" }}</span>
+        </div>
+        <div class="text-slate-600 font-mono">TutorCRM v2.0 • Data System</div>
+    </div>
 </div>
 {% endblock %}

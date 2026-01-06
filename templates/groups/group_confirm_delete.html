@@ -1,21 +1,53 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<div class="p-6 ml-64">
-    <div class="bg-white shadow rounded-xl p-6 text-center">
-        <h2 class="text-xl font-bold mb-4">Guruhni o‘chirish</h2>
-        <p>"<strong>{{ group.name }}</strong>" guruhini o‘chirishni xohlaysizmi?</p>
+{% block title %}Guruhni o'chirish | {{ group.name }}{% endblock %}
 
-        <form method="post" class="mt-6 flex justify-center space-x-4">
+{% block content %}
+<div class="max-w-xl mx-auto mt-10 md:mt-20">
+    <div class="relative overflow-hidden bg-[#0a1631]/60 border border-red-500/20 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(239,68,68,0.15)] text-center">
+        
+        <div class="absolute -top-20 -left-20 w-48 h-48 bg-red-600/10 rounded-full blur-[60px]"></div>
+        <div class="absolute -bottom-20 -right-20 w-48 h-48 bg-red-600/10 rounded-full blur-[60px]"></div>
+
+        <div class="relative mb-8 inline-flex">
+            <div class="w-24 h-24 rounded-3xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500 text-5xl animate-pulse">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <span class="absolute -top-2 -right-2 flex h-6 w-6">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-6 w-6 bg-red-600 flex items-center justify-center text-[10px] text-white font-bold">!</span>
+            </span>
+        </div>
+
+        <h2 class="text-3xl font-black text-white tracking-tight mb-4">Guruhni o'chirish</h2>
+        <p class="text-slate-400 leading-relaxed px-4">
+            Siz haqiqatdan ham <span class="text-red-400 font-bold italic">"{{ group.name }}"</span> guruhini o'chirib tashlamoqchimisiz?
+        </p>
+        
+        <div class="mt-4 p-4 rounded-2xl bg-red-500/5 border border-red-500/10 inline-block text-xs text-red-400 font-semibold uppercase tracking-widest">
+            <i class="fa-solid fa-circle-info mr-2"></i> Bu amalni qaytarib bo'lmaydi
+        </div>
+
+        <form method="post" class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
             {% csrf_token %}
-            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700">
-                Ha, o‘chirish
-            </button>
+            
             <a href="{% url 'groups:group_detail' group.pk %}" 
-               class="px-4 py-2 border rounded-lg hover:bg-gray-100">
+               class="order-2 sm:order-1 flex-1 px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-slate-300 font-bold hover:bg-white/10 hover:text-white transition-all text-center">
                 Bekor qilish
             </a>
+
+            <button type="submit" 
+                    class="order-1 sm:order-2 flex-1 px-8 py-4 bg-red-600 hover:bg-red-500 text-white rounded-2xl font-bold shadow-[0_15px_30px_-5px_rgba(239,68,68,0.4)] transition-all active:scale-95 group">
+                <i class="fa-solid fa-trash-can mr-2 group-hover:rotate-12 transition-transform"></i>
+                Ha, o'chirilsin
+            </button>
         </form>
+    </div>
+
+    <div class="mt-8 text-center">
+        <p class="text-slate-600 text-sm">
+            Adashib kirdingizmi? <a href="{% url 'groups:group_list' %}" class="text-blue-500 hover:underline">Guruhlar ro'yxatiga qayting.</a>
+        </p>
     </div>
 </div>
 {% endblock %}

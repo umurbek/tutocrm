@@ -1,40 +1,88 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <title>Kirish - TutorCRM</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirish | TutorCRM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4">
-  <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md">
-    <!-- Logo -->
-    <h2 class="text-3xl font-extrabold mb-6 text-center text-indigo-600">TutorCRM</h2>
-    <p class="text-center text-gray-500 mb-6">Xush kelibsiz, tizimga kirish uchun variantni tanlang</p>
+<body class="h-screen w-screen flex items-center justify-center bg-[#050b1a] m-0 p-0 overflow-hidden relative">
+    
+    <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full blur-[120px] animate-pulse" style="animation-delay: 2s;"></div>
 
-    <!-- Email orqali kirish -->
-    <form method="post" action="{% url 'accounts:email_login' %}" class="space-y-4">
-      {% csrf_token %}
-      {% if error %}
-        <p class="text-red-500 text-sm text-center">{{ error }}</p>
-      {% endif %}
+    <div class="relative z-10 w-full max-w-md px-6">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-indigo-600 rounded-3xl mb-4 shadow-[0_0_50px_rgba(79,70,229,0.4)] transform -rotate-12">
+                <i class="fa-solid fa-graduation-cap text-4xl text-white"></i>
+            </div>
+            <h1 class="text-4xl font-black text-white tracking-tighter">Tutor<span class="text-indigo-500">CRM</span></h1>
+            <p class="text-slate-500 text-sm mt-2 font-medium">Bilimlar boshqaruviga xush kelibsiz</p>
+        </div>
 
-      <div>
-        <label class="block mb-1 text-sm font-medium text-gray-700">Email</label>
-        <input type="email" name="email" required
-               class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition">
-      </div>
+        <div class="bg-[#0a1631]/60 border border-white/10 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-2xl">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-indigo-400 text-sm"></i>
+                Tizimga kirish
+            </h2>
 
-      <button type="submit"
-              class="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition">
-        📩 Kod yuborish
-      </button>
-    </form>
+            <form method="post" action="{% url 'accounts:email_login' %}" class="space-y-6">
+                {% csrf_token %}
+                
+                {% if error %}
+                    <div class="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl text-[11px] font-bold flex items-center gap-3">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        {{ error }}
+                    </div>
+                {% endif %}
 
-    <!-- Signup link -->
-    <p class="text-center text-gray-500 mt-6">
-      Akkountingiz yo‘qmi? 
-      <a href="{% url 'accounts:signup' %}" class="text-indigo-600 font-medium hover:underline">Ro‘yxatdan o‘ting</a>
-    </p>
-  </div>
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Elektron pochta</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <input type="email" name="email" required placeholder="example@mail.com"
+                               class="w-full bg-[#050b1a]/50 border border-white/5 rounded-2xl pl-11 pr-4 py-4 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all">
+                    </div>
+                </div>
+
+                <button type="submit"
+                        class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-4 rounded-2xl font-black uppercase tracking-[0.1em] text-xs shadow-lg transition-all active:scale-95 flex items-center justify-center gap-3">
+                    Kod yuborish
+                    <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                </button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-white/5 text-center">
+                <p class="text-slate-500 text-xs font-bold">
+                    Akkountingiz yo‘qmi? 
+                    <a href="{% url 'accounts:signup' %}" class="text-indigo-400 hover:text-indigo-300 ml-1">Ro‘yxatdan o‘tish</a>
+                </p>
+            </div>
+        </div>
+
+        <p class="text-center mt-8 text-[10px] text-slate-700 font-bold uppercase tracking-widest">
+            &copy; 2025 TutorCRM &bull; Barcha huquqlar himoyalangan
+        </p>
+    </div>
+
+    <style>
+        /* Body uchun barcha margin/paddinglarni nolga tushiramiz */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.1); }
+        }
+        .animate-pulse {
+            animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
 </body>
 </html>

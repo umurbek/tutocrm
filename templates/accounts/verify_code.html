@@ -1,54 +1,87 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <title>Kodni tasdiqlash</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kodni tasdiqlash | TutorCRM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
-<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100">
+<body class="h-screen w-screen flex items-center justify-center bg-[#050b1a] m-0 p-0 overflow-hidden relative font-sans">
+    
+    <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full blur-[120px] animate-pulse" style="animation-delay: 2s;"></div>
 
-  <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md animate__animated animate__fadeInUp">
-    <!-- Title -->
-    <h2 class="text-3xl font-extrabold mb-6 text-center text-indigo-600">
-      🔑 Kodni tasdiqlash
-    </h2>
+    <div class="relative z-10 w-full max-w-md px-6 animate__animated animate__fadeIn">
+        
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-indigo-600 rounded-3xl mb-4 shadow-[0_0_50px_rgba(79,70,229,0.4)]">
+                <i class="fa-solid fa-key text-3xl text-white"></i>
+            </div>
+            <h1 class="text-3xl font-black text-white tracking-tighter uppercase">Xavfsizlik</h1>
+            <p class="text-slate-500 text-sm mt-2">Emailingizga yuborilgan 6 xonali kodni kiriting</p>
+        </div>
 
-    <!-- Error message -->
-    {% if error %}
-      <p class="text-red-500 text-sm mb-4 text-center animate__animated animate__shakeX">
-        {{ error }}
-      </p>
-    {% endif %}
+        <div class="bg-[#0a1631]/60 border border-white/10 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-10 shadow-2xl relative overflow-hidden">
+            
+            {% if error %}
+                <div class="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl text-[11px] font-bold flex items-center gap-3 mb-6 animate__animated animate__shakeX">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    {{ error }}
+                </div>
+            {% endif %}
 
-    <!-- Form -->
-    <form method="post" class="space-y-5">
-      {% csrf_token %}
-      <div>
-        <label class="block mb-1 text-sm font-medium text-gray-700">Emailga yuborilgan kod</label>
-        <input type="text" name="code" maxlength="6"
-               class="w-full border rounded-lg px-4 py-3 text-lg tracking-widest text-center font-mono 
-                      focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 transition"
-               placeholder="123456" required>
-      </div>
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <div class="space-y-3 text-center">
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Tasdiqlash kodi</label>
+                    <input type="text" name="code" maxlength="6" autofocus required
+                           placeholder="000000"
+                           class="w-full bg-[#050b1a]/50 border border-white/5 rounded-2xl px-4 py-5 text-3xl tracking-[0.5em] text-center font-mono text-indigo-400 placeholder-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all">
+                </div>
 
-      <button type="submit"
-              class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-lg font-semibold 
-                     shadow-md hover:scale-[1.02] active:scale-95 transition transform">
-        ✅ Tasdiqlash
-      </button>
-    </form>
+                <button type="submit"
+                        class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-4 rounded-2xl font-black uppercase tracking-[0.1em] text-xs shadow-lg transition-all active:scale-95 flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Tasdiqlash
+                </button>
+            </form>
 
-    <!-- Resend -->
-    <div class="mt-8 text-center">
-      <p class="text-sm text-gray-600">Kod kelmadimi?</p>
-      <a href="{% url 'accounts:email_login' %}"
-         class="inline-block mt-3 px-5 py-2 rounded-lg border border-indigo-200 text-indigo-600 
-                bg-indigo-50 hover:bg-indigo-100 transition font-medium">
-        🔄 Qayta yuborish
-      </a>
+            <div class="mt-8 pt-6 border-t border-white/5 text-center">
+                <p class="text-slate-500 text-[11px] font-bold uppercase tracking-wider mb-3">Kod kelmadimi?</p>
+                <a href="{% url 'accounts:email_login' %}"
+                   class="inline-flex items-center gap-2 px-6 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-xs font-bold hover:bg-white/10 hover:text-white transition-all">
+                    <i class="fa-solid fa-rotate-right text-[10px]"></i>
+                    Qayta yuborish
+                </a>
+            </div>
+        </div>
+
+        <p class="text-center mt-8 text-[10px] text-slate-700 font-bold uppercase tracking-widest">
+            TutorCRM &bull; Xavfsiz tizim
+        </p>
     </div>
-  </div>
 
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.1); }
+        }
+        .animate-pulse {
+            animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        /* Kod kiritish maydonidagi placeholder rangini to'g'irlash */
+        input::placeholder {
+            letter-spacing: 0.5em;
+        }
+    </style>
 </body>
 </html>

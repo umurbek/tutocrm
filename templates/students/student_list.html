@@ -1,53 +1,162 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}O'quvchilar ro'yxati | TutorCRM{% endblock %}
 
 {% block content %}
-<div class="p-6 ml-64">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">O‘quvchilar</h2>
-        <a href="{% url 'students:student_create' %}" 
-           class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">
-           + Yangi o‘quvchi
-        </a>
+<div class="max-w-7xl mx-auto">
+    {% with user=request.user %}
+    
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div>
+            <h2 class="text-3xl font-black text-white tracking-tight">O'quvchilar</h2>
+            <p class="text-slate-500 text-sm mt-1">Markazdagi barcha ta'lim olayotgan talabalar boshqaruvi.</p>
+        </div>
+        
+        {% if user.is_boss or user.is_superuser %}
+            <a href="{% url 'students:student_create' %}" 
+                class="flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl shadow-[0_10px_20px_-5px_rgba(37,99,235,0.4)] transition-all duration-300 active:scale-95 font-bold">
+                <i class="fa-solid fa-user-plus mr-2 text-sm"></i> Yangi o‘quvchi
+            </a>
+        {% endif %}
     </div>
 
-    <!-- Table -->
-    <div class="bg-white shadow rounded-xl overflow-hidden">
-        <table class="min-w-full border-collapse">
-            <thead class="bg-gray-50 text-gray-700">
-                <tr>
-                    <th class="py-3 px-4">#</th>
-                    <th class="py-3 px-4">Ismi</th>
-                    <th class="py-3 px-4">Email</th>
-                    <th class="py-3 px-4">Telefon</th>
-                    <th class="py-3 px-4">To‘lovi</th>
-                    <th class="py-3 px-4">Guruhi</th>
-                    <th class="py-3 px-4">Kelgan sanasi</th>
-                    <th class="py-3 px-4 text-center">Amallar</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for student in students %}
-                <tr class="hover:bg-gray-50">
-                    <td class="py-3 px-4">{{ forloop.counter }}</td>
-                    <td class="py-3 px-4 font-medium">{{ student.name }}</td>
-                    <td class="py-3 px-4">{{ student.email }}</td>
-                    <td class="py-3 px-4">{{ student.phone }}</td>
-                    <td class="py-3 px-4">{{ student.payment }}</td>
-                    <td class="py-3 px-4">{{ student.group }}</td>
-                    <td class="py-3 px-4">{{ student.join_date }}</td>
-                    <td class="py-3 px-4 text-center space-x-2">
-                        <a href="{% url 'students:student_update' student.pk %}" class="text-blue-600 hover:text-blue-800">✏️</a>
-                        <a href="{% url 'students:student_delete' student.pk %}" class="text-red-600 hover:text-red-800">🗑</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="8" class="py-4 text-center text-gray-500">Hozircha o‘quvchilar yo‘q</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="mb-6">
+        <form method="GET" action="{% url 'students:student_list' %}" class="relative flex flex-col md:flex-row gap-3">
+            <div class="relative flex-1 group">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors"></i>
+                <input type="text" 
+                       name="q" 
+                       value="{{ search_query|default:'' }}" 
+                       placeholder="Ism, familiya, email yoki telefon orqali qidirish..."
+                       class="w-full pl-12 pr-4 py-3.5 bg-[#0a1631]/50 border border-white/5 rounded-2xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 focus:outline-none transition-all text-white placeholder:text-slate-600">
+            </div>
+            
+            <div class="flex gap-2">
+                <button type="submit" 
+                        class="px-8 py-3.5 bg-[#0a1631] border border-white/10 rounded-2xl hover:bg-white/5 text-white font-bold transition-all active:scale-95">
+                    Izlash
+                </button>
+                
+                {% if search_query %}
+                    <a href="{% url 'students:student_list' %}" 
+                       class="flex items-center justify-center px-4 py-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 hover:bg-red-500/20 transition-all shadow-lg shadow-red-500/5">
+                        <i class="fa-solid fa-xmark"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+        
+        {% if search_query %}
+            <div class="mt-4 px-4 py-2 bg-blue-500/5 border border-blue-500/10 rounded-xl inline-block">
+                <p class="text-xs text-blue-400 font-medium">
+                    <i class="fa-solid fa-filter mr-2"></i> "{{ search_query }}" bo'yicha topildi: <span class="font-bold text-white ml-1">{{ students.count }} ta natija</span>
+                </p>
+            </div>
+        {% endif %}
     </div>
+
+    <div class="bg-[#0a1631]/30 border border-white/5 backdrop-blur-md rounded-[2rem] overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-white/[0.02] border-b border-white/5">
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">#</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">F.I.SH</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Kontakt</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Holat</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Guruh</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Ro'yxatdan o'tdi</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] text-center">Amallar</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for student in students %}
+                    <tr class="group hover:bg-white/[0.03] transition-colors duration-300">
+                        <td class="py-5 px-6">
+                            <span class="text-slate-600 font-mono text-xs group-hover:text-blue-400">
+                                {{ forloop.counter|stringformat:"02d" }}
+                            </span>
+                        </td>
+                        <td class="py-5 px-6">
+                            <a href="{% url 'students:student_detail' student.pk %}" class="flex items-center group/link">
+                                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-[10px] text-white font-bold mr-3 border border-white/5 group-hover/link:from-blue-600 group-hover/link:to-indigo-600 transition-all shadow-lg">
+                                    {{ student.user.first_name|slice:":1" }}{{ student.user.last_name|slice:":1" }}
+                                </div>
+                                <span class="text-white font-bold group-hover/link:text-blue-400 transition-colors tracking-tight">
+                                    {{ student.user.get_full_name|default:"-" }}
+                                </span>
+                            </a>
+                        </td>
+                        <td class="py-5 px-6">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs text-slate-300 flex items-center"><i class="fa-solid fa-envelope mr-2 text-[10px] text-slate-600"></i>{{ student.user.email|default:"-" }}</span>
+                                <span class="text-xs text-slate-500 flex items-center"><i class="fa-solid fa-phone mr-2 text-[10px] text-slate-600"></i>{{ student.user.phone|default:"-" }}</span>
+                            </div>
+                        </td>
+                        <td class="py-5 px-6">
+                            {% if student.payment > 0 %} 
+                                <span class="px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                    To‘langan
+                                </span>
+                            {% else %}
+                                <span class="px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-lg bg-red-500/10 text-red-400 border border-red-500/20">
+                                    Qarzdor
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-5 px-6">
+                            <div class="flex items-center gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></div>
+                                <span class="text-sm text-slate-300 font-medium">{{ student.group.name|default:"Guruhsiz" }}</span>
+                            </div>
+                        </td>
+                        <td class="py-5 px-6">
+                            <span class="text-xs text-slate-500 font-medium">{{ student.user.date_joined|date:"M. d, Y"|default:"-" }}</span>
+                        </td>
+                        <td class="py-5 px-6">
+                            <div class="flex justify-center items-center gap-2">
+                                {% if user.is_boss or user.is_superuser or user.is_teacher %} 
+                                    <a href="{% url 'students:student_update' student.pk %}" 
+                                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 hover:bg-amber-500 hover:text-white transition-all shadow-lg shadow-amber-500/5"
+                                       title="Tahrirlash">
+                                        <i class="fa-solid fa-user-pen text-xs"></i>
+                                    </a>
+                                {% endif %}
+
+                                {% if user.is_boss or user.is_superuser %}
+                                    <a href="{% url 'students:student_delete' student.pk %}" 
+                                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-500/5"
+                                       title="O'chirish">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </a>
+                                {% endif %}
+                                <a href="{% url 'students:student_detail' student.pk %}" 
+                                   class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-all">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="py-20 text-center">
+                            <div class="flex flex-col items-center">
+                                <div class="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-4 border border-white/5">
+                                    <i class="fa-solid fa-users-slash text-4xl text-slate-700"></i>
+                                </div>
+                                <p class="text-slate-500 font-medium italic">Hozircha o‘quvchilar ma'lumotlari mavjud emas.</p>
+                                {% if search_query %}
+                                    <p class="text-blue-500 text-sm mt-2 font-bold tracking-widest uppercase">"{{ search_query }}" topilmadi</p>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endwith %}
 </div>
 {% endblock %}

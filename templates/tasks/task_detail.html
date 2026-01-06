@@ -1,32 +1,149 @@
 {% extends "base.html" %}
 
+{% block title %}{{ task.title }} | Vazifa Tafsilotlari{% endblock %}
+
 {% block content %}
-<div class="max-w-3xl mx-auto bg-white shadow rounded-lg p-6">
-  <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ task.title }}</h1>
+<div class="max-w-4xl mx-auto">
+    <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">
+        <a href="{% url 'tasks:task_list' %}" class="hover:text-blue-400 transition-colors">Vazifalar</a>
+        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+        <span class="text-slate-300">{{ task.title|truncatechars:30 }}</span>
+    </nav>
 
-  <div class="flex items-center text-sm text-gray-500 mb-4 space-x-4">
-    <p>📅 Muddat: <span class="font-medium">{{ task.due_date|date:"d.m.Y" }}</span></p>
-    <p>👥 Guruh: <span class="font-medium">{{ task.group.name }}</span></p>
-    <p>✍️ Yaratilgan: {{ task.created_at|date:"d.m.Y H:i" }}</p>
-  </div>
+    <div class="bg-[#0a1631]/50 border border-white/5 backdrop-blur-md rounded-[2.5rem] overflow-hidden shadow-2xl">
+        
+        <div class="p-8 md:p-10 border-b border-white/5 relative">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl"></div>
+            
+            <div class="relative flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div class="space-y-2">
+                    <h1 class="text-3xl font-black text-white tracking-tight">{{ task.title }}</h1>
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <span class="flex items-center text-sm text-slate-400">
+                            <i class="fa-solid fa-user-nib mr-2 text-blue-500"></i>
+                            {{ task.created_by.get_full_name|default:"Tizim" }}
+                        </span>
+                        <div class="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
+                        <span class="flex items-center text-sm text-slate-400">
+                            <i class="fa-solid fa-calendar-day mr-2 text-blue-500"></i>
+                            Muddati: <span class="text-white font-bold ml-1">{{ task.due_date|date:"d.m.Y" }}</span>
+                        </span>
+                    </div>
+                </div>
 
-  <p class="text-gray-700 mb-6 leading-relaxed">{{ task.description }}</p>
+                <div class="self-start">
+                    {% if task.status == "pending" %}
+                        <span class="px-5 py-2 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-black uppercase tracking-[0.2em] rounded-2xl flex items-center shadow-lg shadow-amber-500/5">
+                            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse mr-2"></span>
+                            Kutilmoqda
+                        </span>
+                    {% else %}
+                        <span class="px-5 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-black uppercase tracking-[0.2em] rounded-2xl flex items-center">
+                            <i class="fa-solid fa-circle-check mr-2"></i>
+                            Yakunlangan
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
 
-  <div class="flex items-center space-x-3">
-    <a href="{% url 'tasks:task_list' %}" class="px-3 py-2 bg-gray-200 rounded-lg">⬅️ Orqaga</a>
+        <div class="grid grid-cols-1 md:grid-cols-2 bg-white/[0.02] border-b border-white/5">
+            <div class="p-6 md:px-10 border-b md:border-b-0 md:border-r border-white/5">
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Tayinlangan</p>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center text-blue-400">
+                        <i class="fa-solid {% if task.target_group %}fa-users-rectangle{% else %}fa-user-tag{% endif %}"></i>
+                    </div>
+                    <span class="text-slate-200 font-bold">
+                        {% if task.target_group %}
+                            {{ task.target_group.name }} <span class="text-slate-500 font-normal">(Guruh)</span>
+                        {% elif task.target_student %}
+                            {{ task.target_student.user.get_full_name }} <span class="text-slate-500 font-normal">(Shaxsiy)</span>
+                        {% else %}
+                            <span class="text-red-400">Hech kimga tayinlanmagan</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="p-6 md:px-10">
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Muhimlik darajasi</p>
+                <div class="flex items-center gap-2">
+                    <div class="flex gap-1">
+                        <div class="w-6 h-1.5 rounded-full bg-blue-600"></div>
+                        <div class="w-6 h-1.5 rounded-full bg-blue-600"></div>
+                        <div class="w-6 h-1.5 rounded-full bg-slate-700"></div>
+                    </div>
+                    <span class="text-xs text-slate-400 font-bold ml-2">O'rtacha</span>
+                </div>
+            </div>
+        </div>
 
-    {% if task.status == "pending" %}
-      <form action="{% url 'tasks:task_complete' task.id %}" method="post">
-        {% csrf_token %}
-        <button type="submit" class="px-3 py-2 bg-green-600 text-white rounded-lg">
-          ✅ Bajarildi
-        </button>
-      </form>
-    {% else %}
-      <span class="px-4 py-2 bg-green-100 text-green-700 rounded-lg">
-        ✅ Bajarilgan
-      </span>
-    {% endif %}
-  </div>
+        <div class="p-8 md:p-10">
+            <h2 class="text-xs font-black text-slate-500 uppercase tracking-[0.3em] mb-6 flex items-center">
+                Vazifa Tavsifi
+                <span class="flex-1 h-[1px] bg-white/5 ml-4"></span>
+            </h2>
+            <div class="prose prose-invert max-w-none">
+                <p class="text-slate-300 leading-loose text-lg whitespace-pre-wrap font-medium">{{ task.description|default:"Tavsif berilmagan." }}</p>
+            </div>
+        </div>
+
+        {% if user.is_student %}
+        <div class="p-8 md:p-10 bg-blue-600/[0.03] border-t border-white/5">
+            {% if student_assignment %}
+                {% if student_assignment.is_completed %}
+                    <div class="flex items-center gap-4 p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-[2rem]">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white text-xl shadow-lg shadow-emerald-500/20">
+                            <i class="fa-solid fa-check-double"></i>
+                        </div>
+                        <div>
+                            <p class="text-emerald-400 font-black uppercase tracking-widest text-xs">Muvaffaqiyatli topshirildi</p>
+                            <p class="text-slate-400 text-sm italic">{{ student_assignment.completed_at|date:"d.m.Y H:i" }} da qabul qilindi.</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <form method="POST" action="{% url 'tasks:submit_assignment' task_pk=task.pk %}" class="flex flex-col md:flex-row items-center gap-6">
+                        {% csrf_token %}
+                        <div class="flex-1">
+                            <h4 class="text-white font-bold mb-1">Vazifani yakunladingizmi?</h4>
+                            <p class="text-slate-500 text-sm italic">Topshirish tugmasini bossangiz, o'qituvchi sizni tekshirishni boshlaydi.</p>
+                        </div>
+                        <button type="submit" class="w-full md:w-auto px-10 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-[0_15px_30px_-10px_rgba(16,185,129,0.4)] active:scale-95">
+                            Topshirish
+                        </button>
+                    </form>
+                {% endif %}
+            {% elif user.is_active %}
+                <div class="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-sm font-bold italic">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    Sizga bu vazifa hali tayinlanmagan.
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
+        <a href="{% url 'tasks:task_list' %}" class="flex items-center px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-slate-400 font-bold hover:text-white transition-all">
+            <i class="fa-solid fa-arrow-left mr-3"></i> Ro'yxatga qaytish
+        </a>
+        
+        <div class="flex gap-3">
+            {% if user.is_boss or user.is_superuser or task.created_by == user %}
+                <a href="{% url 'tasks:task_update' task.pk %}" class="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-amber-400 font-bold hover:bg-amber-500/10 transition-all">
+                    <i class="fa-solid fa-pen-to-square mr-2"></i> Tahrirlash
+                </a>
+                
+                {% if task.status == "pending" %}
+                    <form action="{% url 'tasks:task_complete' task.id %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl font-bold shadow-lg shadow-purple-500/20 transition-all active:scale-95">
+                            <i class="fa-solid fa-flag-checkered mr-2"></i> Yakunlash
+                        </button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}

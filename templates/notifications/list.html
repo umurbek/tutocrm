@@ -1,33 +1,108 @@
 {% extends "base.html" %}
 
-{% block content %}
-<h1 class="text-2xl font-bold mb-6">Bildirishnomalar</h1>
+{% block title %}Bildirishnomalar | TutorCRM{% endblock %}
 
-{% if notifications %}
-  <ul class="divide-y">
-    {% for n in notifications %}
-      <li class="py-3 flex items-center justify-between {% if not n.is_read %}bg-blue-50{% endif %}">
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="flex items-center justify-between mb-8">
         <div>
-          <p class="font-semibold">{{ n.title }}</p>
-          <p class="text-sm text-gray-600">{{ n.message }}</p>
-          <p class="text-xs text-gray-400">{{ n.created_at|date:"d.m.Y H:i" }}</p>
+            <h1 class="text-3xl font-black text-white tracking-tight flex items-center gap-3">
+                <i class="fa-solid fa-bell text-blue-500 animate-tada"></i>
+                Bildirishnomalar
+            </h1>
+            <p class="text-slate-500 text-sm mt-1">Tizimdagi barcha muhim xabarlar va yangilanishlar.</p>
         </div>
-        <div>
-          {% if not n.is_read %}
-            <!-- O‘qilmagan → ichiga olib kiradi -->
-            <a href="{% url 'notification_read' n.id %}" 
-               class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
-               Ichiga kirish
-            </a>
-          {% else %}
-            <!-- O‘qilgan -->
-            <span class="px-3 py-1 bg-gray-300 rounded text-sm">O‘qilgan</span>
-          {% endif %}
+        
+        {% if notifications %}
+        <span class="px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-xs font-bold uppercase tracking-widest">
+            Jami: {{ notifications.count }}
+        </span>
+        {% endif %}
+    </div>
+
+    {% if notifications %}
+    <div class="bg-[#0a1631]/30 border border-white/5 backdrop-blur-md rounded-[2.5rem] overflow-hidden shadow-2xl">
+        <ul class="divide-y divide-white/5">
+            {% for n in notifications %}
+            <li class="relative group transition-all duration-300 hover:bg-white/[0.02] 
+                       {% if not n.is_read %}bg-blue-600/[0.03]{% endif %}">
+                
+                <div class="p-6 md:p-8 flex items-start gap-6">
+                    <div class="relative flex-shrink-0">
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl
+                                    {% if not n.is_read %}
+                                        bg-blue-500/20 text-blue-400 border border-blue-500/30
+                                    {% else %}
+                                        bg-slate-800/50 text-slate-500 border border-white/5
+                                    {% endif %}">
+                            <i class="fa-solid {% if 'vazifa' in n.title|lower %}fa-book-open{% elif 'to‘lov' in n.title|lower %}fa-wallet{% else %}fa-envelope-open-text{% endif %}"></i>
+                        </div>
+                        {% if not n.is_read %}
+                            <span class="absolute -top-1 -right-1 flex h-4 w-4">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-4 w-4 bg-blue-600 border-2 border-[#050b1a]"></span>
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex-1 min-w-0">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
+                            <h3 class="font-bold text-lg tracking-tight 
+                                       {% if not n.is_read %}text-white{% else %}text-slate-400{% endif %}">
+                                {{ n.title }}
+                            </h3>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center">
+                                <i class="fa-regular fa-clock mr-1.5"></i>
+                                {{ n.created_at|date:"d.m.Y H:i" }}
+                            </span>
+                        </div>
+                        <p class="text-slate-400 leading-relaxed text-sm line-clamp-2 group-hover:line-clamp-none transition-all duration-500">
+                            {{ n.message }}
+                        </p>
+                    </div>
+
+                    <div class="flex-shrink-0 self-center">
+                        {% if not n.is_read %}
+                            <a href="{% url 'notification_read' n.id %}" 
+                               class="inline-flex items-center px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-95">
+                                O‘qish
+                                <i class="fa-solid fa-chevron-right ml-2 text-[10px]"></i>
+                            </a>
+                        {% else %}
+                            <div class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-slate-600 text-[10px] font-black uppercase tracking-widest">
+                                <i class="fa-solid fa-check mr-1.5"></i> Ko‘rilgan
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-300"></div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <div class="py-20 text-center bg-[#0a1631]/20 border border-dashed border-white/10 rounded-[2.5rem]">
+        <div class="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fa-solid fa-bell-slash text-4xl text-slate-700"></i>
         </div>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p class="text-gray-500">Bildirishnomalar yo‘q.</p>
-{% endif %}
+        <h3 class="text-xl font-bold text-slate-400">Bildirishnomalar mavjud emas</h3>
+        <p class="text-slate-600 text-sm mt-2 px-6">Hozircha sizda hech qanday yangi xabar yo‘q. Yangilanishlar bo‘lishi bilan bu yerda paydo bo‘ladi.</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    @keyframes tada {
+        0% { transform: rotate(0deg); }
+        10% { transform: rotate(-15deg); }
+        20% { transform: rotate(15deg); }
+        30% { transform: rotate(-15deg); }
+        40% { transform: rotate(15deg); }
+        50% { transform: rotate(0deg); }
+    }
+    .animate-tada {
+        animation: tada 2s infinite;
+    }
+</style>
 {% endblock %}

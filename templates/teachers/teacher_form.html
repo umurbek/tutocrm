@@ -1,33 +1,99 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}O'qituvchi Ma'lumotlari | TutorCRM{% endblock %}
 
 {% block content %}
-<div class="p-6 ml-64">
-    <div class="bg-white shadow rounded-xl p-6">
-        <h2 class="text-xl font-bold mb-4">O‘qituvchi qo‘shish / tahrirlash</h2>
+<div class="max-w-3xl mx-auto space-y-8">
+    
+    <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.3)]">
+            <i class="fa-solid fa-user-plus text-white text-xl"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl font-black text-white tracking-tight">O‘qituvchi Ma'lumotlari</h1>
+            <p class="text-slate-500 text-xs uppercase tracking-widest font-bold">Ma'lumotlarni kiritish va yangilash</p>
+        </div>
+    </div>
 
-        <form method="POST" class="space-y-4">
+    <div class="bg-[#0a1631]/40 border border-white/5 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-10 shadow-2xl relative overflow-hidden">
+        
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-600/10 rounded-full blur-[80px]"></div>
+
+        <form method="POST" class="space-y-6 relative z-10">
             {% csrf_token %}
-            {% for field in form %}
-            <div>
-                <label class="block mb-1 font-medium text-gray-700">
-                    {{ field.label }}
-                </label>
-                {{ field }}
-                {% if field.errors %}
-                <p class="text-red-500 text-sm">{{ field.errors }}</p>
-                {% endif %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for field in form %}
+                <div class="space-y-2 group {% if field.name == 'bio' or field.name == 'address' %}md:col-span-2{% endif %}">
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 transition-colors group-focus-within:text-indigo-400">
+                        {{ field.label }}
+                    </label>
+                    
+                    <div class="relative">
+                        {{ field }}
+                        
+                        {% if field.errors %}
+                        <div class="mt-2 flex items-center gap-2 text-rose-500">
+                            <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+                            <p class="text-[11px] font-bold">{{ field.errors.0 }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
 
-            <div class="flex justify-end space-x-3">
+            <div class="flex items-center justify-end gap-4 pt-8 border-t border-white/5">
                 <a href="{% url 'teachers:teacher_list' %}" 
-                   class="px-4 py-2 border rounded-lg hover:bg-gray-100">Bekor qilish</a>
+                   class="px-8 py-3.5 rounded-2xl text-slate-400 font-black uppercase tracking-widest text-[10px] hover:bg-white/5 hover:text-white transition-all">
+                    Bekor qilish
+                </a>
                 <button type="submit" 
-                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700">
+                        class="px-10 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-500/20 transition-all active:scale-95 flex items-center gap-3">
+                    <i class="fa-solid fa-floppy-disk"></i>
                     Saqlash
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+<style>
+    /* Django form elementlarini stollash */
+    input, select, textarea {
+        width: 100% !important;
+        background-color: rgba(5, 11, 26, 0.5) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 1rem !important;
+        padding: 0.875rem 1.25rem !important;
+        color: white !important;
+        font-size: 0.875rem !important;
+        transition: all 0.3s ease !important;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none !important;
+        border-color: rgba(79, 70, 229, 0.5) !important;
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1) !important;
+        background-color: rgba(5, 11, 26, 0.8) !important;
+    }
+
+    textarea {
+        min-height: 120px !important;
+        resize: vertical !important;
+    }
+
+    /* Select ikonkasini oq qilish (Dark mode uchun) */
+    select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+        background-position: right 0.5rem center !important;
+        background-repeat: no-repeat !important;
+        background-size: 1.5em 1.5em !important;
+        padding-right: 2.5rem !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+    }
+</style>
 {% endblock %}

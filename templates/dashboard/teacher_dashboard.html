@@ -1,12 +1,204 @@
-<!-- dashboard/templates/dashboard/teacher_dashboard.html -->
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-  <meta charset="UTF-8">
-  <title>Teacher Dashboard</title>
-</head>
-<body>
-  <h1>Salom, {{ request.user.username }}!</h1>
-  <p>Bu o‘qituvchi paneli.</p>
-</body>
-</html>
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}O'qituvchi Paneli | TutorCRM{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-900 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-900 via-slate-900 to-black text-white p-4 md:p-8 font-sans">
+    
+    <header class="mb-10 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-indigo-400 drop-shadow-lg">
+                Salom, {{ request.user.first_name|default:request.user.username }}! 👋
+            </h1>
+            <p class="text-slate-400 mt-2 text-lg font-light">
+                Bugungi faoliyatingiz va o‘quv jarayonlari nazorati.
+            </p>
+        </div>
+        
+        <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-sm text-slate-300 shadow-lg">
+            <i class="fa-regular fa-calendar-days mr-2"></i> {% now "d F Y" %}
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        
+        <div class="group relative p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-xl transition-all duration-300 hover:bg-white/10 hover:shadow-indigo-500/20 hover:-translate-y-1">
+            <div class="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-indigo-500/20 blur-xl group-hover:bg-indigo-500/30 transition-all"></div>
+            <div class="flex justify-between items-start relative z-10">
+                <div>
+                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Jami Guruhlar</p>
+                    <p class="text-4xl font-bold text-white mt-2">{{ total_groups|default:0 }}</p>
+                </div>
+                <div class="p-3 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 group-hover:text-indigo-200 group-hover:bg-indigo-500/40 transition-colors">
+                    <i class="fa-solid fa-layer-group text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="group relative p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-xl transition-all duration-300 hover:bg-white/10 hover:shadow-emerald-500/20 hover:-translate-y-1">
+            <div class="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-emerald-500/20 blur-xl group-hover:bg-emerald-500/30 transition-all"></div>
+            <div class="flex justify-between items-start relative z-10">
+                <div>
+                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">O‘quvchilar</p>
+                    <p class="text-4xl font-bold text-white mt-2">{{ total_students|default:0 }}</p>
+                </div>
+                <div class="p-3 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 group-hover:text-emerald-200 group-hover:bg-emerald-500/40 transition-colors">
+                    <i class="fa-solid fa-user-graduate text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="group relative p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-xl transition-all duration-300 hover:bg-white/10 hover:shadow-amber-500/20 hover:-translate-y-1">
+            <div class="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-amber-500/20 blur-xl group-hover:bg-amber-500/30 transition-all"></div>
+            <div class="flex justify-between items-start relative z-10">
+                <div>
+                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Kutilayotgan</p>
+                    <p class="text-4xl font-bold text-white mt-2">{{ pending_tasks_count|default:0 }}</p>
+                </div>
+                <div class="p-3 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 group-hover:text-amber-200 group-hover:bg-amber-500/40 transition-colors">
+                    <i class="fa-solid fa-list-check text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="group relative p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-xl transition-all duration-300 hover:bg-white/10 hover:shadow-blue-500/20 hover:-translate-y-1">
+            <div class="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-blue-500/20 blur-xl group-hover:bg-blue-500/30 transition-all"></div>
+            <div class="flex justify-between items-start relative z-10">
+                <div>
+                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Bugungi Darslar</p>
+                    <p class="text-4xl font-bold text-white mt-2">{{ today_lessons_count|default:0 }}</p>
+                </div>
+                <div class="p-3 rounded-xl bg-blue-500/20 text-blue-300 border border-blue-500/30 group-hover:text-blue-200 group-hover:bg-blue-500/40 transition-colors">
+                    <i class="fa-solid fa-chalkboard-user text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+
+        <div class="lg:col-span-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-lg overflow-hidden flex flex-col shadow-2xl">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
+                <h2 class="text-xl font-semibold text-white tracking-wide">
+                    <i class="fa-solid fa-clock mr-2 text-indigo-400"></i> Kelgusi Darslar
+                </h2>
+                <a href="{% url 'groups:schedule' %}" class="text-sm px-4 py-2 rounded-lg bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-600 hover:text-white transition-all">
+                    To'liq jadval <i class="fa-solid fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            
+            <ul class="divide-y divide-white/5 flex-1">
+                {% if upcoming_lessons %}
+                    {% for lesson in upcoming_lessons %}    
+                    <li class="p-5 flex items-center justify-between hover:bg-white/5 transition duration-200 group">
+                        <div class="flex items-center gap-4">
+                            <div class="hidden md:flex flex-col items-center justify-center w-14 h-14 rounded-xl bg-slate-800/50 border border-white/10 text-center">
+                                <span class="text-xs text-slate-400 font-bold uppercase">{{ lesson.start_time|date:"M" }}</span>
+                                <span class="text-xl text-white font-bold">{{ lesson.start_time|date:"d" }}</span>
+                            </div>
+
+                            <div>
+                                <p class="font-bold text-lg text-white group-hover:text-indigo-300 transition-colors">
+                                    {{ lesson.group.name }}
+                                </p>
+                                <p class="text-sm text-slate-400 flex items-center gap-3 mt-1">
+                                    <span><i class="fa-regular fa-clock mr-1 text-indigo-400"></i> {{ lesson.start_time|date:"H:i" }}</span>
+                                    <span class="md:hidden">• {{ lesson.start_time|date:"d M" }}</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <a href="{% url 'groups:attendance' lesson.id %}" 
+                            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all shadow-lg shadow-emerald-500/10">
+                                <i class="fa-solid fa-clipboard-user"></i>
+                                <span class="text-xs font-bold uppercase tracking-wider hidden sm:inline">Yo'qlama</span>
+                            </a>
+                            
+                            <span class="hidden lg:inline-block text-xs font-semibold px-3 py-1 rounded-full text-indigo-200 bg-indigo-500/10 border border-indigo-500/20">
+                                {{ lesson.group.course.name|default:"Dars" }}
+                            </span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="p-10 text-center flex flex-col items-center justify-center text-slate-500">
+                        <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-mug-hot text-2xl"></i>
+                        </div>
+                        <p>Yaqin kunlarda darslar rejalashtirilmagan.</p>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-lg overflow-hidden flex flex-col shadow-2xl h-fit">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center bg-amber-500/5">
+                <h2 class="text-xl font-semibold text-white tracking-wide">
+                    <i class="fa-solid fa-list-check mr-2 text-amber-400"></i> Vazifalar
+                </h2>
+                <a href="{% url 'tasks:task_list' %}" class="text-xs font-medium text-amber-400 hover:text-amber-300 uppercase tracking-wider">
+                    Barchasi
+                </a>
+            </div>
+            <ul class="divide-y divide-white/5">
+                {% if tasks_for_review %}
+                    {% for task in tasks_for_review %}
+                        <li class="hover:bg-white/5 transition duration-200">
+                            <a href="{% url 'tasks:task_detail' task.id %}" class="block p-5">
+                                <p class="font-medium text-white text-lg leading-tight mb-2">{{ task.title }}</p>
+                                <div class="flex items-center justify-between mt-2">
+                                    <p class="text-xs text-slate-400 flex items-center gap-2">
+                                        <i class="fa-solid fa-users text-slate-500"></i> {{ task.group_name }}
+                                    </p>
+                                    <span class="flex items-center gap-1.5 text-xs font-bold text-amber-400 bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20">
+                                        {{ task.pending_count }} <span class="hidden sm:inline">tekshiruv</span>
+                                    </span>
+                                </div>
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="p-10 text-center flex flex-col items-center justify-center text-slate-500">
+                        <i class="fa-solid fa-clipboard-check text-4xl mb-3 opacity-30"></i>
+                        <p>Hozircha barchasi joyida!</p>
+                        <p class="text-xs mt-1">Tekshirish uchun vazifalar yo'q.</p>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="rounded-2xl bg-gradient-to-br from-white/5 to-white/0 border border-white/10 backdrop-blur-lg overflow-hidden shadow-2xl">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center">
+            <div>
+                <h2 class="text-xl font-semibold text-white">Faollik Statistikasi</h2>
+                <p class="text-sm text-slate-400 mt-1">Guruhlaringizdagi o'rtacha o'zlashtirish va davomat.</p>
+            </div>
+            <button class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition">
+                <i class="fa-solid fa-ellipsis text-slate-400"></i>
+            </button>
+        </div>
+        <div class="p-8 relative min-h-[250px] flex items-center justify-center">
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+            
+            <div class="text-center">
+                <i class="fa-solid fa-chart-pie text-6xl text-white/10 mb-4 block"></i>
+                <p class="text-slate-400">Statistika grafigi tez orada yuklanadi...</p>
+                <div class="mt-4 flex gap-2 justify-center">
+                    <div class="h-2 w-12 rounded-full bg-indigo-500/50 animate-pulse"></div>
+                    <div class="h-2 w-8 rounded-full bg-emerald-500/50 animate-pulse delay-75"></div>
+                    <div class="h-2 w-10 rounded-full bg-amber-500/50 animate-pulse delay-150"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-8 text-center text-xs text-slate-600 font-mono">
+        TutorCRM v2.0 • 2026 Design System
+    </div>
+
+</div>
+{% endblock content %}

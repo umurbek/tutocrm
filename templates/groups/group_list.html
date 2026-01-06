@@ -1,65 +1,140 @@
 {% extends 'base.html' %}
 
+{% block title %}Guruhlar | TutorCRM{% endblock %}
+
 {% block content %}
-<div class="p-6 ml-64">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">Guruhlar</h2>
-        <a href="{% url 'groups:group_create' %}" 
-           class="px-4 py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700">
-           + Yangi guruh
-        </a>
+<div class="max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div>
+            <h2 class="text-3xl font-black text-white tracking-tight">Guruhlar</h2>
+            <p class="text-slate-500 text-sm mt-1">O'quv jarayonidagi barcha faol guruhlar ro'yxati.</p>
+        </div>
+        
+        {% if request.user.is_boss or request.user.is_superuser %}
+            <a href="{% url 'groups:group_create' %}" 
+                class="flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl shadow-[0_10px_20px_-5px_rgba(37,99,235,0.4)] transition-all duration-300 active:scale-95 font-bold">
+                <i class="fa-solid fa-plus mr-2 text-sm"></i> Yangi guruh qo'shish
+            </a>
+        {% endif %}
     </div>
 
-    <!-- Search -->
-    <div class="flex items-center justify-between mb-4">
-        <input type="text" placeholder="Izlash..." 
-               class="w-1/3 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+    <div class="mb-6">
+        <form method="GET" action="{% url 'groups:group_list' %}" class="relative flex flex-col md:flex-row gap-3">
+            <div class="relative flex-1 group">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors"></i>
+                <input type="text" 
+                       name="q" 
+                       placeholder="Guruh nomi yoki o'qituvchi bo'yicha izlash..." 
+                       value="{{ search_query|default:'' }}" 
+                       class="w-full pl-12 pr-4 py-3.5 bg-[#0a1631]/50 border border-white/5 rounded-2xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 focus:outline-none transition-all text-white placeholder:text-slate-600">
+            </div>
+            
+            <div class="flex gap-2">
+                <button type="submit" 
+                        class="px-8 py-3.5 bg-[#0a1631] border border-white/10 rounded-2xl hover:bg-white/5 text-white font-bold transition-all active:scale-95">
+                    Izlash
+                </button>
+                
+                {% if search_query %}
+                    <a href="{% url 'groups:group_list' %}" 
+                       class="flex items-center justify-center px-4 py-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 hover:bg-red-500/20 transition-all shadow-lg shadow-red-500/5">
+                        <i class="fa-solid fa-xmark"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </form>
     </div>
 
-    <!-- Table -->
-    <div class="bg-white shadow rounded-xl overflow-hidden">
-        <table class="min-w-full border-collapse">
-            <thead class="bg-gray-50 text-gray-700">
-                <tr>
-                    <th class="py-3 px-4 text-left">#</th>
-                    <th class="py-3 px-4 text-left">Guruh</th>
-                    <th class="py-3 px-4 text-left">O‘quvchilar soni</th>
-                    <th class="py-3 px-4 text-left">O‘qituvchi</th>
-                    <th class="py-3 px-4 text-center">Harakatlar</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y">
-                {% for group in groups %}
-                <tr class="hover:bg-gray-50">
-                    <td class="py-3 px-4">{{ forloop.counter|stringformat:"02d" }}</td>
-                    <td class="py-3 px-4 font-medium text-gray-800">
-                        <a href="{% url 'groups:group_detail' group.pk %}" class="hover:underline">
-                            {{ group.name }}
-                        </a>
-                    </td>
-                    <td class="py-3 px-4">{{ group.students_count }}</td>
-                    <td class="py-3 px-4">{{ group.teacher }}</td>
-                    <td class="py-3 px-4 text-center space-x-2">
-                        <a href="{% url 'groups:group_update' group.pk %}" 
-                           class="text-emerald-600 hover:text-emerald-800">
-                           <i class="ri-edit-2-line"></i>
-                        </a>
-                        <a href="{% url 'groups:group_delete' group.pk %}" 
-                           class="text-red-600 hover:text-red-800">
-                           <i class="ri-delete-bin-line"></i>
-                        </a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="py-4 text-center text-gray-500">
-                        Hozircha guruhlar yo‘q
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="bg-[#0a1631]/30 border border-white/5 backdrop-blur-md rounded-[2rem] overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-white/[0.02] border-b border-white/5">
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Tartib</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Guruh nomi</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">O'quvchilar</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">O'qituvchi</th>
+                        <th class="py-5 px-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] text-center">Harakatlar</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for group in groups %}
+                    <tr class="group hover:bg-white/[0.03] transition-colors duration-300">
+                        <td class="py-5 px-6">
+                            <span class="text-slate-500 font-mono text-sm group-hover:text-blue-400 transition-colors">
+                                {{ forloop.counter|stringformat:"02d" }}
+                            </span>
+                        </td>
+                        <td class="py-5 px-6">
+                            <a href="{% url 'groups:group_detail' group.pk %}" class="flex items-center">
+                                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/20 flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-folder-open text-blue-400"></i>
+                                </div>
+                                <span class="text-white font-bold group-hover:text-blue-400 transition-colors tracking-tight">
+                                    {{ group.name }}
+                                </span>
+                            </a>
+                        </td>
+                        <td class="py-5 px-6">
+                            <div class="flex items-center text-slate-300">
+                                <i class="fa-solid fa-users-viewfinder mr-2 text-slate-600"></i>
+                                <span class="font-semibold">{{ group.students_count }}</span>
+                                <span class="ml-1 text-[10px] text-slate-500">ta</span>
+                            </div>
+                        </td>
+                        <td class="py-5 px-6">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center mr-2 text-[10px] text-white font-bold overflow-hidden uppercase">
+                                    {% if group.teacher.avatar %}
+                                        <img src="{{ group.teacher.avatar.url }}" alt="avatar">
+                                    {% else %}
+                                        {{ group.teacher.get_full_name|slice:":1" }}
+                                    {% endif %}
+                                </div>
+                                <span class="text-slate-400 text-sm font-medium italic">
+                                    {{ group.teacher.get_full_name|default:group.teacher }}
+                                </span>
+                            </div>
+                        </td>
+                        <td class="py-5 px-6">
+                            <div class="flex justify-center items-center gap-2">
+                                {% if request.user.is_boss or request.user.is_superuser %}
+                                    <a href="{% url 'groups:group_update' group.pk %}" 
+                                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all shadow-lg shadow-emerald-500/5"
+                                       title="Tahrirlash">
+                                        <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                    </a>
+                                    <a href="{% url 'groups:group_delete' group.pk %}" 
+                                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-500/5"
+                                       title="O'chirish">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </a>
+                                {% endif %}
+                                <a href="{% url 'groups:group_detail' group.pk %}" 
+                                   class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-all shadow-lg shadow-blue-500/5">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="py-20 text-center">
+                            <div class="flex flex-col items-center">
+                                <div class="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-4 border border-white/5">
+                                    <i class="fa-solid fa-inbox text-4xl text-slate-700"></i>
+                                </div>
+                                <p class="text-slate-500 font-medium">Hozircha guruhlar topilmadi.</p>
+                                {% if search_query %}
+                                    <p class="text-blue-500 text-sm mt-2 font-bold">"{{ search_query }}" bo'yicha hech narsa yo'q</p>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

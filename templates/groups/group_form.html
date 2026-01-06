@@ -1,32 +1,86 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<div class="p-6 ml-64">
-    <div class="bg-white shadow rounded-xl p-6">
-        <h2 class="text-xl font-bold mb-4">
-            {% if form.instance.pk %} Guruhni tahrirlash {% else %} Yangi guruh qo‘shish {% endif %}
-        </h2>
+{% block title %}
+    {% if form.instance.pk %} Guruhni tahrirlash {% else %} Yangi guruh {% endif %} | TutorCRM
+{% endblock %}
 
-        <form method="POST" class="space-y-4">
-            {% csrf_token %}
-            {% for field in form %}
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <a href="{% url 'groups:group_list' %}" class="inline-flex items-center text-slate-500 hover:text-white mb-6 transition-colors group">
+        <i class="fa-solid fa-arrow-left-long mr-2 group-hover:-translate-x-1 transition-transform"></i>
+        Ro'yxatga qaytish
+    </a>
+
+    <div class="bg-[#0a1631]/50 border border-white/5 backdrop-blur-md rounded-[2.5rem] p-8 md:p-10 shadow-2xl relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl"></div>
+
+        <div class="flex items-center gap-4 mb-10">
+            <div class="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xl">
+                <i class="fa-solid {% if form.instance.pk %}fa-pen-to-square{% else %}fa-plus{% endif %}"></i>
+            </div>
             <div>
-                <label class="block mb-1 font-medium text-gray-700">
+                <h2 class="text-2xl font-black text-white tracking-tight">
+                    {% if form.instance.pk %} Guruhni tahrirlash {% else %} Yangi guruh qo‘shish {% endif %}
+                </h2>
+                <p class="text-slate-500 text-sm">Ma'lumotlarni to'ldiring va saqlash tugmasini bosing.</p>
+            </div>
+        </div>
+
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="space-y-2">
+                <label class="block text-sm font-bold text-slate-400 ml-1 uppercase tracking-widest">
                     {{ field.label }}
                 </label>
-                {{ field }}
+                
+                <div class="relative group">
+                    {% if field.field.widget.input_type == 'select' %}
+                        <div class="relative">
+                            {{ field }}
+                            <style>
+                                /* Django form field-lariga render bo'lganda ta'sir qiladi */
+                                select, input[type="text"], input[type="number"], textarea {
+                                    width: 100% !important;
+                                    padding: 0.875rem 1.25rem !important;
+                                    background-color: rgba(5, 11, 26, 0.5) !important;
+                                    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                                    border-radius: 1rem !important;
+                                    color: white !important;
+                                    outline: none !important;
+                                    transition: all 0.3s !important;
+                                }
+                                select:focus, input:focus, textarea:focus {
+                                    border-color: #3b82f6 !important;
+                                    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2) !important;
+                                    background-color: rgba(5, 11, 26, 0.8) !important;
+                                }
+                                option { background: #0a1631; color: white; }
+                            </style>
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                </div>
+
                 {% if field.errors %}
-                <p class="text-red-500 text-sm">{{ field.errors }}</p>
+                <div class="flex items-center gap-2 mt-2 text-red-400 text-xs font-bold bg-red-500/10 p-2 rounded-lg border border-red-500/20">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    {{ field.errors.0 }}
+                </div>
                 {% endif %}
             </div>
             {% endfor %}
 
-            <div class="flex justify-end space-x-3">
+            <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-white/5 mt-8">
                 <a href="{% url 'groups:group_list' %}" 
-                   class="px-4 py-2 border rounded-lg hover:bg-gray-100">Bekor qilish</a>
+                   class="px-8 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-slate-400 font-bold hover:bg-white/10 hover:text-white transition-all text-center">
+                    Bekor qilish
+                </a>
                 <button type="submit" 
-                        class="px-4 py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700">
-                    Saqlash
+                        class="px-10 py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-[0_10px_20px_-5px_rgba(37,99,235,0.4)] transition-all active:scale-95">
+                    <i class="fa-solid fa-check-double mr-2"></i> Saqlash
                 </button>
             </div>
         </form>

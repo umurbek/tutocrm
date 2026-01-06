@@ -12,17 +12,53 @@ ALLOWED_HOSTS = ["*"]
 # ------------------------
 AUTH_USER_MODEL = "accounts.CustomUser"
 
+
+# settings.py
+
+JAZZMIN_SETTINGS = {
+    # Sayt sarlavhasi (brauzer tabida)
+    "site_title": "TutoCRM Boshqaruvi",
+
+    # Admin panelning asosiy sarlavhasi
+    "site_header": "TutoCRM",
+
+    # Chap menyudagi yopish/ochish tugmasini o'chirish
+    "navigation_expanded": False,
+    "custom_css": "css/jazzmin_glass.css",
+    "topmenu_links": [
+
+        # Asosiy Dashboard uchun Home tugmasi
+        {"name": "Home",  "url": "admin:index", "permissions": ["auth.view_user"]},
+
+        # O'zingizning Students (Talabalar) modelingizga havola
+        {"name": "Talabalar", "url": "/admin/school/student/", "icon": "fas fa-users"},
+        
+        # O'zingizning Teachers (O'qituvchilar) modelingizga havola
+        {"name": "O'qituvchilar", "url": "/admin/school/teacher/", "icon": "fas fa-chalkboard-teacher"},
+        
+        # Admin ilovalarini ochadigan umumiy menyu (zarur bo'lsa)
+        {"model": "auth.User"},
+        ],
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "united",  # 'united', 'cosmo', 'superhero', 'darkly' kabi ko'plab mavzular mavjud
+    "sidebar": "sidebar-dark-primary",
+    "navbar_classes": "navbar-light navbar-warning",
+    # Qo'shimcha sozlamalar uchun Jazzmin hujjatlariga qarang
+}
 # ------------------------
 # Application definition
 # ------------------------
 INSTALLED_APPS = [
+    'jazzmin',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
+    'django.contrib.humanize',
     # allauth uchun
     "django.contrib.sites",
     "allauth",
@@ -40,7 +76,10 @@ INSTALLED_APPS = [
     "tasks",
     "settingsapp",
     "notifications",
-    "chat"
+    "chat",
+    "payments",
+    "schedule",
+    "lessons",
 ]
 
 SITE_ID = 1
@@ -139,7 +178,7 @@ SOCIALACCOUNT_ADAPTER = "accounts.adapter.NoSignupAdapter"
 # Internationalization
 # ------------------------
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Tashkent"
 USE_I18N = True
 USE_TZ = True
 
@@ -148,7 +187,21 @@ USE_TZ = True
 # ------------------------
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
+# settings.py ning pastki qismida
 
+# Statik fayllarning URL manzili (brauzer uchun)
+STATIC_URL = 'static/'
+
+# **********************************************
+# Quyidagi qatorni qo'shing (Xatolikni tuzatish uchun)
+# Bu collectstatic buyrug'i statik fayllarni yig'adigan manzil
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# **********************************************
+
+# Loyihaning o'zidagi statik fayllar uchun qo'shimcha papka (ixtiyoriy)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_ROOT = BASE_DIR / "media"
 

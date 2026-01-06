@@ -1,116 +1,163 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="uz" class="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}TutorCRM{% endblock %}</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
-  {% block extra_head %}{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TutorCRM{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Maxsus scrollbar va fon ranglari */
+        body {
+            background-color: #050b1a; /* Deep Dark Blue */
+            color: #cbd5e1;
+        }
+        .glass-header {
+            background: rgba(10, 22, 49, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-dropdown {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-gray-100 font-sans antialiased">
+<body class="font-sans antialiased overflow-x-hidden">
 
-  <div class="flex min-h-screen">
-    <!-- Sidebar -->
-    {% include 'partials/sidebar.html' %}
+    <div class="flex min-h-screen relative">
+        {% include 'partials/sidebar.html' %}
 
-    <!-- Main Content -->
-    <main class="flex-1 md:ml-64 p-6">
-      <!-- Topbar -->
-      <div class="flex justify-end items-center mb-6 relative space-x-4">
+        <div class="flex flex-col flex-1 w-full">
+            
+            <header class="glass-header sticky top-0 z-30 transition-all duration-300">
+                <div class="flex justify-between md:justify-end items-center h-16 px-6">
+                    
+                    <div class="md:hidden">
+                        <span class="text-white font-black italic tracking-tighter">Tutor<span class="text-blue-500 font-normal">CRM</span></span>
+                    </div>
 
-        <!-- Notifications -->
-        <div class="relative">
-          <button id="notifButton" class="relative">
-            <i class="ri-notification-3-line text-xl text-gray-500"></i>
-            {% if unread_count > 0 %}
-              <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                {{ unread_count }}
-              </span>
-            {% endif %}
-          </button>
-          <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border py-2 z-50">
-            {% if unread_list %}
-              {% for notif in unread_list %}
-                <a href="{% url 'notifications:notification_read' notif.id %}" class="block px-4 py-2 border-b hover:bg-gray-50">
-                  <p class="font-medium text-sm">{{ notif.title }}</p>
-                  <p class="text-xs text-gray-500">{{ notif.created_at|date:"d.m.Y H:i" }}</p>
-                </a>
-              {% endfor %}
-            {% else %}
-              <p class="text-center text-gray-500 p-4 text-sm">Hech qanday bildirishnoma yo‘q</p>
-            {% endif %}
-          </div>
+                    <div class="flex items-center space-x-2 md:space-x-5">
+                        
+                        <div class="relative">
+                            <button id="notifButton" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/5 transition-all text-slate-400 hover:text-blue-400">
+                                <i class="fa-solid fa-bell text-lg"></i>
+                                {% if unread_count > 0 %}
+                                    <span class="absolute top-2 right-2 flex h-2.5 w-2.5">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
+                                    </span>
+                                {% endif %}
+                            </button>
+
+                            <div id="notifDropdown" class="hidden absolute right-0 mt-3 w-80 glass-dropdown rounded-2xl shadow-2xl py-3 z-50 overflow-hidden transform transition-all duration-200">
+                                <div class="px-4 pb-2 border-b border-white/5 flex justify-between items-center">
+                                    <h3 class="text-sm font-bold text-white tracking-wide">Bildirishnomalar</h3>
+                                    {% if unread_count > 0 %}<span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full">{{ unread_count }} ta yangi</span>{% endif %}
+                                </div>
+                                
+                                <div class="max-h-96 overflow-y-auto">
+                                    {% if unread_list %}
+                                        {% for notif in unread_list %}
+                                            <a href="{% url 'notifications:notification_read' notif.id %}" class="block px-4 py-4 border-b border-white/5 hover:bg-white/5 transition duration-150 group">
+                                                <p class="font-bold text-sm text-slate-200 group-hover:text-blue-400">{{ notif.title }}</p>
+                                                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">
+                                                    <i class="fa-regular fa-clock mr-1"></i> {{ notif.created_at|date:"H:i / d.m" }}
+                                                </p>
+                                            </a>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="text-center py-10 opacity-30">
+                                            <i class="fa-solid fa-bell-slash text-3xl mb-2"></i>
+                                            <p class="text-xs italic tracking-widest">Hozircha bo'sh</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="px-4 pt-3 text-center">
+                                    <a href="{% url 'notifications:notification_list' %}" class="text-xs text-blue-400 hover:text-white font-bold transition">Barchasini ko'rish</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="{% url 'chat:index' %}" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/5 transition-all text-slate-400 hover:text-cyan-400">
+                            <i class="fa-solid fa-message text-lg"></i>
+                        </a>
+
+                        <div class="relative">
+                            <button id="userMenuButton" class="flex items-center p-1.5 rounded-xl hover:bg-white/5 transition-all focus:outline-none group">
+                                <div class="relative">
+                                    <img src="{{ avatar_url|default:'/static/images/default-avatar.png' }}" class="w-9 h-9 rounded-lg object-cover ring-2 ring-white/10 group-hover:ring-blue-500/50 transition-all" alt="user">
+                                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#0a1631] rounded-full"></div>
+                                </div>
+                                <div class="hidden md:block text-left ml-3 mr-2">
+                                    <p class="font-bold text-sm text-white leading-none tracking-tight">{{ request.user.first_name|default:request.user.username }}</p>
+                                    <p class="text-slate-500 text-[10px] mt-1 uppercase font-black tracking-widest">{{ request.user.get_role_display|default:"Foydalanuvchi" }}</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-down text-[10px] text-slate-500 group-hover:text-white transition-colors"></i>
+                            </button>
+
+                            <div id="userDropdown" class="hidden absolute right-0 mt-3 w-60 glass-dropdown rounded-2xl shadow-2xl py-2 z-50 transform transition-all duration-200 overflow-hidden">
+                                <div class="px-5 py-4 bg-white/[0.03] border-b border-white/5 mb-2">
+                                    <p class="text-xs font-black text-blue-500 uppercase tracking-[0.2em] mb-1">E-pochta</p>
+                                    <p class="text-sm text-white truncate font-medium">{{ request.user.email }}</p>
+                                </div>
+
+                                <a href="{% url 'accounts:profile' %}" class="flex items-center px-5 py-3 text-slate-400 hover:bg-white/5 hover:text-white transition-all mx-2 rounded-xl">
+                                    <i class="fa-solid fa-user-gear mr-4 opacity-50"></i> Profil
+                                </a>
+                                
+                                {% if request.user.is_boss or request.user.is_teacher %}
+                                    <a href="{% url 'settings:settings' %}" class="flex items-center px-5 py-3 text-slate-400 hover:bg-white/5 hover:text-white transition-all mx-2 rounded-xl">
+                                        <i class="fa-solid fa-sliders mr-4 opacity-50"></i> Sozlamalar
+                                    </a>
+                                {% endif %}
+
+                                <form method="post" action="{% url 'accounts:logout' %}" class="mt-2 pt-2 border-t border-white/5">
+                                    {% csrf_token %}
+                                    <button type="submit" class="flex items-center w-full px-5 py-3 text-red-400 hover:bg-red-500/10 transition-all">
+                                        <i class="fa-solid fa-power-off mr-4 opacity-50 text-sm"></i> <span class="font-bold">Chiqish</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="flex-1 p-4 md:p-10">
+                {% block content %}{% endblock %}
+            </main>
+
         </div>
+    </div>
 
-        <!-- Chat -->
-        <a href="{% url 'chat:index' %}">
-          <i class="ri-message-3-line text-xl text-gray-500 hover:text-blue-500"></i>
-        </a>
+    <script>
+        const setupDropdown = (buttonId, dropdownId) => {
+            const btn = document.getElementById(buttonId);
+            const menu = document.getElementById(dropdownId);
+            if (btn && menu) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Boshqa barcha dropdownlarni yopish
+                    document.querySelectorAll('.glass-dropdown').forEach(d => {
+                        if (d !== menu) d.classList.add('hidden');
+                    });
+                    menu.classList.toggle('hidden');
+                });
+            }
+        };
 
-        <!-- Profil dropdown -->
-        <div class="relative">
-          <!-- Trigger -->
-          <button id="userMenuButton" class="flex items-center space-x-2 focus:outline-none">
-            <img src="{{ avatar_url|default:'/static/images/default-avatar.png' }}" class="w-9 h-9 rounded-full" alt="user">
-            <div class="hidden md:block text-left text-sm">
-              <p class="font-medium">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-              <p class="text-gray-500">{{ request.user.username }}</p>
-            </div>
-            <i class="ri-arrow-down-s-line text-gray-500"></i>
-          </button>
+        setupDropdown('userMenuButton', 'userDropdown');
+        setupDropdown('notifButton', 'notifDropdown');
 
-          <!-- Dropdown -->
-          <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border py-2 z-50">
-            <a href="{% url 'accounts:profile' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-              <i class="ri-user-line mr-2"></i> Profil
-            </a>
-            <a href="{% url 'settings:settings' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-              <i class="ri-settings-3-line mr-2"></i> Sozlamalar
-            </a>
-            <form method="post" action="{% url 'accounts:logout' %}" class="w-full">
-              {% csrf_token %}
-              <button type="submit" class="flex items-center px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 w-full text-left">
-                <i class="ri-logout-box-r-line text-lg"></i>
-                <span class="ml-3">Chiqish</span>
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <!-- Page Content -->
-      {% block content %}{% endblock %}
-    </main>
-  </div>
-
-  <!-- JS -->
-  <script>
-    const userMenuButton = document.getElementById('userMenuButton');
-    const userDropdown = document.getElementById('userDropdown');
-    if (userMenuButton) {
-      userMenuButton.addEventListener('click', () => {
-        userDropdown.classList.toggle('hidden');
-      });
-      document.addEventListener('click', (e) => {
-        if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
-          userDropdown.classList.add('hidden');
-        }
-      });
-    }
-
-    const notifButton = document.getElementById('notifButton');
-    const notifDropdown = document.getElementById('notifDropdown');
-    if (notifButton) {
-      notifButton.addEventListener('click', () => {
-        notifDropdown.classList.toggle('hidden');
-      });
-      document.addEventListener('click', (e) => {
-        if (!notifButton.contains(e.target) && !notifDropdown.contains(e.target)) {
-          notifDropdown.classList.add('hidden');
-        }
-      });
-    }
-  </script>
+        // Tashqariga bosganda yopish
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.glass-dropdown').forEach(d => d.classList.add('hidden'));
+        });
+    </script>
 </body>
 </html>
